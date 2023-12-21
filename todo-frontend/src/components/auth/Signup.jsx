@@ -3,28 +3,18 @@ import { NavLink } from "react-router-dom";
 import { loginSuccess } from "../../reduxStore/Slices/userSlice";
 import { useDispatch } from "react-redux";
 import axios from "axios";
+import Updatephoto from "../Updatephoto";
 
 const Signup = () => {
   const [user, setUser] = useState({});
   const dispatch = useDispatch();
-  const [file, setFile] = useState();
-  function handleChange(event) {
-    setFile(event.target.files[0]);
-  }
 
-  function registeruser(e) {
+  async function registeruser(e) {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("file", file);
-    const config = {
-      headers: {
-        "content-type": "multipart/form-data",
-      },
-    };
-    axios
-      .post("/api/user/register", formData, config)
+
+    await axios
+      .post("/api/user/register", user)
       .then((res) => {
-        console.log(res.data);
         dispatch(loginSuccess(res.data.data));
         setUser({});
       })
@@ -34,7 +24,7 @@ const Signup = () => {
   }
   return (
     <div>
-      <form onSubmit={registeruser} encType="aplication/json">
+      <form onSubmit={(e) => registeruser(e)}>
         <label htmlFor="fullname">Fullname</label>
         <br />
         <input
@@ -90,23 +80,12 @@ const Signup = () => {
           required
         />
         <br />
-        <label htmlFor="profilephoto">Profile Photo</label>
-        <br />
-        <input
-          type="file"
-          name="profilephoto"
-          id="profilephoto"
-          value={user.profilephoto || ""}
-          onChange={(e) =>
-            setUser((pre) => ({ ...pre, profilephoto: e.target.value }))
-          }
-        />
-        <br />
         <button>Create Account</button>
       </form>
       <p>
         Already have an account <NavLink to="/auth">Sign In</NavLink>{" "}
       </p>
+      <Updatephoto />
     </div>
   );
 };

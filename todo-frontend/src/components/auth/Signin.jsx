@@ -13,7 +13,6 @@ const Signin = () => {
     axios
       .post("/api/user/login", user)
       .then((res) => {
-        console.log(res.data);
         dispatch(loginSuccess(res.data.data));
         setUser({});
       })
@@ -23,7 +22,7 @@ const Signin = () => {
   }
   return (
     <div>
-      <form onSubmit={loginuser}>
+      <form onSubmit={(e) => loginuser(e)}>
         <label htmlFor="email">Email</label>
         <br />
         <input

@@ -5,6 +5,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
 
 const addtodo = asyncHandler(async (req, res) => {
+  const userid = req.user._id;
   const { title, description, deadline } = req.body;
   if (!title) return res.json(new ApiError(401, "title field is requied"));
   const existedTodo = await Todo.findOne({ title });
@@ -22,13 +23,15 @@ const addtodo = asyncHandler(async (req, res) => {
   });
   if (!todo) return res.json(new ApiError(501, "internal server error"));
 
-  // await todo.save();
-  // const filledTodo = await Todo.findById(todo._id);
-
-  // const updatedUser = await User.findById(req.user._id);
-  // updatedUser.todos.push(filledTodo._id);
-  // await updatedUser.save();
-  res.status(201).json(new ApiResponse(201, "todo created successfully"));
+  const filledTodo = await Todo.findById(todo._id);
+  todo.owner = userid;
+  await todo.save();
+  const updatedUser = await User.findById(req.user._id);
+  updatedUser.todos.push(filledTodo._id);
+  await updatedUser.save();
+  return res
+    .status(201)
+    .json(new ApiResponse(201, "todo created successfully"));
 });
 
 const removetodo = asyncHandler(async (req, res) => {
@@ -36,10 +39,10 @@ const removetodo = asyncHandler(async (req, res) => {
   const deletedtodo = await Todo.findByIdAndDelete(id);
   if (!deletedtodo)
     return res.json(new ApiError(500, "Something went wrong in server"));
-  // const user = await User.findById(req.user._id);
-  // const index = user.todos.indexOf(id);
-  // user.todos.splice(index, 1);
-  // await user.save();
+  const user = await User.findById(req.user._id);
+  const index = user.todos.indexOf(id);
+  user.todos.splice(index, 1);
+  await user.save();
 
   return res.json(
     new ApiResponse(200, deletedtodo, "your todo was deleted successfully!")
@@ -55,9 +58,8 @@ const findsingletodo = asyncHandler(async (req, res) => {
 });
 
 const findtodo = asyncHandler(async (req, res) => {
-  // const userid = req.user._id;
-  // const alltodos = await Todo.find({ owner: userid });
-  const alltodos = await Todo.find();
+  const userid = req.user._id;
+  const alltodos = await Todo.find({ owner: userid });
   if (!alltodos) {
     return res.status(404).json(new ApiError(404, "you are not a valid user"));
   }
@@ -79,7 +81,7 @@ const updatetodo = asyncHandler(async (req, res) => {
 
 const updatetodostatus = asyncHandler(async (req, res) => {
   const { completed } = req.body;
-  console.log(completed);
+
   const updatedtodo = await Todo.findByIdAndUpdate(
     req.params.id,
     { completed },

@@ -5,7 +5,10 @@ import { IoSearch } from "react-icons/io5";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { todoSuccess } from "./reduxStore/Slices/todoSlice";
+import { loginSuccess } from "./reduxStore/Slices/userSlice";
 import Addtodo from "./components/Addtodo";
+import { Link } from "react-router-dom";
+import Profile from "./components/Profile";
 
 const Todos = () => {
   const { todos, loading, todoError } = useSelector((state) => state.todo);
@@ -23,6 +26,12 @@ const Todos = () => {
     day: "numeric",
   });
 
+  useEffect(() => {
+    axios
+      .get("/api/user/loginwithtoken")
+      .then((res) => dispatch(loginSuccess(res.data.data)))
+      .catch((err) => console.log(err));
+  }, []);
   useEffect(() => {
     axios
       .get("/api/todos/getalltodos")
@@ -102,90 +111,99 @@ const Todos = () => {
             >
               Add New Todo
             </button>{" "}
+            {isAuthenticated && <Profile />}
           </div>
         </div>
-
-        <div className="w-full py-3 px-2 bg-yellow-200 rounded-lg mt-2 overflow-auto">
-          {filteredTodos.length === 0 && (
-            <p className="text-center">
-              there are no todos to show, create one !
-            </p>
-          )}
-          {filteredTodos.length > 0 && (
-            <Fragment>
-              <table className="w-full">
-                <thead>
-                  <tr className="grid grid-cols-12 border-b-2 border-slate-600 pb-2 ">
-                    <th className=" col-span-0.5  ">Sr.no.</th>
-                    <th className=" col-span-2  ">Title</th>
-                    <th className=" col-span-3   ">Description</th>
-                    <th className=" col-span-1.5   ">Created At</th>
-                    <th className=" col-span-2   ">Deadline</th>
-                    <th className=" col-span-1  ">Status</th>
-                    <th className=" col-span-2   ">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredTodos?.map((todo, i) => (
-                    <tr
-                      key={todo._id}
-                      className="grid grid-cols-12 border-b-2 border-slate-600 py-1 "
-                    >
-                      <td className=" col-span-.5 place-self-center px-1 ">
-                        {i + 1}
-                      </td>
-                      <td className=" col-span-2 place-self-center px-1 ">
-                        {todo.title}
-                      </td>
-                      <td className=" col-span-3 place-self-center px-1  ">
-                        {todo.description}
-                      </td>
-                      <td className=" col-span-1.5 place-self-center px-1 ">
-                        {todo.createdAt}
-                      </td>
-                      <td className=" col-span-2 place-self-center px-1 mx-1 ">
-                        {todo.deadline}
-                      </td>
-                      <td className=" col-span-1 place-self-center px-1 ">
-                        {todo.completed ? "Completed" : "Pending"}{" "}
-                        <input
-                          type="checkbox"
-                          defaultChecked={todo.completed}
-                          name="status"
-                          onClick={(e) => {
-                            editStatus(todo._id, !todo.completed);
-                          }}
-                        />
-                      </td>
-                      <td className=" col-span-2 place-self-center px-1 ">
-                        <button
-                          disabled={todo.completed}
-                          onClick={() => {
-                            setShow(true);
-                            setTodoId(todo._id);
-                          }}
-                          className={`px-3 py-1 ${
-                            todo.completed ? "bg-[#38419D]" : "bg-green-700"
-                          }  rounded-md text-white font-medium text-md`}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            deleteTodo(todo._id);
-                          }}
-                          className="px-3 py-1  bg-red-700 rounded-md text-white font-medium text-md ml-1 "
-                        >
-                          Delete
-                        </button>
-                      </td>
+        {isAuthenticated ? (
+          <div className="w-full py-3 px-2 bg-yellow-200 rounded-lg mt-2 overflow-auto">
+            {filteredTodos.length === 0 && (
+              <p className="text-center">
+                there are no todos to show, create one !
+              </p>
+            )}
+            {filteredTodos.length > 0 && (
+              <Fragment>
+                <table className="w-full">
+                  <thead>
+                    <tr className="grid grid-cols-12 border-b-2 border-slate-600 pb-2 ">
+                      <th className=" col-span-0.5  ">Sr.no.</th>
+                      <th className=" col-span-2  ">Title</th>
+                      <th className=" col-span-3   ">Description</th>
+                      <th className=" col-span-1.5   ">Created At</th>
+                      <th className=" col-span-2   ">Deadline</th>
+                      <th className=" col-span-1  ">Status</th>
+                      <th className=" col-span-2   ">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </Fragment>
-          )}
-        </div>
+                  </thead>
+                  <tbody>
+                    {filteredTodos?.map((todo, i) => (
+                      <tr
+                        key={todo._id}
+                        className="grid grid-cols-12 border-b-2 border-slate-600 py-1 "
+                      >
+                        <td className=" col-span-.5 place-self-center px-1 ">
+                          {i + 1}
+                        </td>
+                        <td className=" col-span-2 place-self-center px-1 ">
+                          {todo.title}
+                        </td>
+                        <td className=" col-span-3 place-self-center px-1  ">
+                          {todo.description}
+                        </td>
+                        <td className=" col-span-1.5 place-self-center px-1 ">
+                          {todo.createdAt}
+                        </td>
+                        <td className=" col-span-2 place-self-center px-1 mx-1 ">
+                          {todo.deadline}
+                        </td>
+                        <td className=" col-span-1 place-self-center px-1 ">
+                          {todo.completed ? "Completed" : "Pending"}{" "}
+                          <input
+                            type="checkbox"
+                            defaultChecked={todo.completed}
+                            name="status"
+                            onClick={(e) => {
+                              editStatus(todo._id, !todo.completed);
+                            }}
+                          />
+                        </td>
+                        <td className=" col-span-2 place-self-center px-1 ">
+                          <button
+                            disabled={todo.completed}
+                            onClick={() => {
+                              setShow(true);
+                              setTodoId(todo._id);
+                            }}
+                            className={`px-3 py-1 ${
+                              todo.completed ? "bg-[#38419D]" : "bg-green-700"
+                            }  rounded-md text-white font-medium text-md`}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              deleteTodo(todo._id);
+                            }}
+                            className="px-3 py-1  bg-red-700 rounded-md text-white font-medium text-md ml-1 "
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Fragment>
+            )}
+          </div>
+        ) : (
+          <div className="w-full py-3 px-2 bg-yellow-200 rounded-lg mt-2 overflow-auto text-center">
+            <span>Login to use this App</span>{" "}
+            <Link to="/auth" className="underline">
+              Login Here
+            </Link>
+          </div>
+        )}
         {show && (
           <div
             className={`absolute inset-0 bg-[#24212157] flex justify-center items-center backdrop-blur-sm min-w-full`}

@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import session from "express-session";
+import bodyParser from "body-parser";
 import flash from "connect-flash";
 import handleError from "./middlewares/error.js";
 
@@ -25,7 +26,8 @@ app.use(
 );
 
 app.use(express.json({ limit: "16kb" }));
-app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+app.use(express.urlencoded({ extended: false, limit: "16kb" }));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(express.static("public"));
 app.use(cookieParser()); //"klfasv$2g598fasj*@jdfh"

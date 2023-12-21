@@ -44,29 +44,18 @@ const registerUser = asyncHandler(async (req, res) => {
     );
   }
 
-  const avatarLocalPath = req.file?.path;
-
-  const avatar = await uploadOnCloudinary(avatarLocalPath);
-
   const user = await User.create({
     fullName,
-    profilephoto: {
-      public_id: avatar?.public_id || "",
-      url: avatar?.secure_url || "",
-    },
     email,
     password,
     monumber,
   });
-
   const createdUser = await User.findById(user._id);
-
   if (!createdUser) {
     return res.json(
       new ApiError(500, "Something went wrong while registering the user")
     );
   }
-
   return res
     .status(201)
     .json(new ApiResponse(200, createdUser, "User registered Successfully"));
@@ -273,19 +262,7 @@ const updatePassword = asyncHandler(async (req, res, next) => {
 const updateProfile = asyncHandler(async (req, res, next) => {
   const newUserData = req.body;
 
-  //   const imageId = user.avatar.public_id;
-  //  await deleteFromCloudinary(imageId);
-
-  const avatarLocalPath = req.file?.path;
-
-  const avatar = await uploadOnCloudinary(avatarLocalPath);
-
-  newUserData.profilephoto = {
-    public_id: avatar?.public_id || "",
-    url: avatar?.secure_url || "",
-  };
-
-  const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+  const user = await User.findByIdAndUpdate(req.user._id, newUserData, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
@@ -295,6 +272,39 @@ const updateProfile = asyncHandler(async (req, res, next) => {
     .status(200)
     .json(
       new ApiResponse(200, user, "your profile has been updated successfully")
+    );
+});
+
+const updatephoto = asyncHandler(async (req, res, next) => {
+  const userId = req.user._id;
+
+  const avatarLocalPath = req.file?.path;
+
+  const avatar = await uploadOnCloudinary(avatarLocalPath);
+
+  let profilephoto = {
+    public_id: avatar?.public_id || "",
+    url: avatar?.secure_url || "",
+  };
+
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { $set: { profilephoto: profilephoto } },
+    {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    }
+  );
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        user,
+        "your profile photo has been updated successfully"
+      )
     );
 });
 
@@ -308,4 +318,5 @@ export {
   getUserDetails,
   updatePassword,
   updateProfile,
+  updatephoto,
 };
