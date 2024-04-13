@@ -1,36 +1,37 @@
-import axios from "axios";
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { loginFail } from "../reduxStore/Slices/userSlice";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import useLogout from "../auth/useLogout";
 
 const Profile = () => {
-  const { user, isAuthenticated, error } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
+  const logout = useLogout();
+  const [showmenu, setShowmenu] = useState(false);
+  const { userDetails } = useSelector((state) => state.user);
 
-  //   const imglink = user?.profilephoto.url;
-
-  function logout() {
-    axios
-      .get("/api/user/logout")
-      .then((res) => {
-        console.log(res.data);
-        dispatch(loginFail());
-      })
-      .catch((err) => console.log(err));
-  }
   return (
-    <div>
-      <div className="w-[250px]">
-        <div className="w-[40px] rounded-full overflow-hidden">
-          {user && <img src="" alt="user photo" />}
-        </div>
-        <Link>Update Photo</Link>
-        <Link>Update Password</Link>
-        <Link>Change Password</Link>
-        <Link>Update Info</Link>
-        <button onClick={logout}>Logout</button>
+    <div className="w-[250px] relative ">
+      <div
+        className="w-[50px] rounded-full overflow-hidden text-black hover:cursor-pointer "
+        onClick={(e) => setShowmenu((prev) => !prev)}
+      >
+        <img
+          src={userDetails?.profilephoto ?? "/images/user.png"}
+          alt="user photo"
+        />
       </div>
+      <ul
+        className={`absolute top-8 left-0 p-2 text-sm bg-slate-400 border border-1 border-black ${
+          showmenu ? "block" : "hidden"
+        }  `}
+      >
+        <li>Update Photo</li>
+        <li>Update Password</li>
+        <li>Change Password</li>
+        <li>Update Info</li>
+        <li>
+          {" "}
+          <button onClick={logout}>Logout</button>
+        </li>
+      </ul>
     </div>
   );
 };

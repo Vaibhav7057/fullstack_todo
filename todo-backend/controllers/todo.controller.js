@@ -5,30 +5,22 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
 
 const addtodo = asyncHandler(async (req, res) => {
-  const userid = req.user._id;
   const { title, description, deadline } = req.body;
-  if (!title) return res.json(new ApiError(401, "title field is requied"));
+  if (!title) throw new ApiError(401, "title field is requied");
   const existedTodo = await Todo.findOne({ title });
 
   if (existedTodo) {
-    return res.json(
-      new ApiError(409, `Todo with title '${title}' already exists`)
-    );
+    throw new ApiError(409, `Todo with title '${title}' already exists`);
   }
 
   const todo = await Todo.create({
     title,
     description,
     deadline,
+    owner: req.user._id,
   });
-  if (!todo) return res.json(new ApiError(501, "internal server error"));
+  if (!todo) throw new ApiError(501, "internal server error");
 
-  const filledTodo = await Todo.findById(todo._id);
-  todo.owner = userid;
-  await todo.save();
-  const updatedUser = await User.findById(req.user._id);
-  updatedUser.todos.push(filledTodo._id);
-  await updatedUser.save();
   return res
     .status(201)
     .json(new ApiResponse(201, "todo created successfully"));
@@ -37,46 +29,67 @@ const addtodo = asyncHandler(async (req, res) => {
 const removetodo = asyncHandler(async (req, res) => {
   const id = req.params.id;
   const deletedtodo = await Todo.findByIdAndDelete(id);
-  if (!deletedtodo)
-    return res.json(new ApiError(500, "Something went wrong in server"));
-  const user = await User.findById(req.user._id);
-  const index = user.todos.indexOf(id);
-  user.todos.splice(index, 1);
-  await user.save();
+  if (!deletedtodo) throw new ApiError(500, "Something went wrong in server");
 
   return res.json(
-    new ApiResponse(200, deletedtodo, "your todo was deleted successfully!")
+    new ApiResponse(
+      200,
+      "your todo was deleted successfully!",
+      "deletedTodo",
+      deletedtodo
+    )
   );
 });
 
 const findsingletodo = asyncHandler(async (req, res) => {
   const id = req.params.id;
 
-  const singleTodo = await Todo.findById(id).select("-deadline");
+  const singleTodo = await Todo.findById(id);
+  if (!singleTodo) throw new ApiError(404, "todo not found");
 
-  return res.json(new ApiResponse(200, singleTodo, "here is your todo!"));
+  return res.json(
+    new ApiResponse(200, "here is your todo!", "todo", singleTodo)
+  );
 });
 
 const findtodo = asyncHandler(async (req, res) => {
   const userid = req.user._id;
   const alltodos = await Todo.find({ owner: userid });
   if (!alltodos) {
-    return res.status(404).json(new ApiError(404, "you are not a valid user"));
+    throw new ApiError(404, "you are not a valid user");
   }
-  res.json(new ApiResponse(200, alltodos, "here are your todos!"));
+  res.json(new ApiResponse(200, "here are your todos!", "todos", alltodos));
 });
 
 const updatetodo = asyncHandler(async (req, res) => {
-  const updatedtodo = await Todo.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-    useFindAndModify: false,
-  });
+  const { title, description, deadline } = req.body;
+  const updatedtodo = await Todo.findByIdAndUpdate(
+    req.params.id,
+    {
+      $set: {
+        title,
+        description,
+        deadline,
+      },
+    },
+    {
+      new: true,
+      // runValidators: true,
+      // useFindAndModify: false,
+    }
+  );
   if (!updatedtodo)
-    return new ApiError(501, "Something went wrong while updating todo");
+    throw new ApiError(501, "Something went wrong while updating todo");
   res
     .status(200)
-    .json(new ApiResponse(200, updatedtodo, "todo updated successfully"));
+    .json(
+      new ApiResponse(
+        200,
+        "todo updated successfully",
+        "updatedtodo",
+        updatedtodo
+      )
+    );
 });
 
 const updatetodostatus = asyncHandler(async (req, res) => {
@@ -84,19 +97,22 @@ const updatetodostatus = asyncHandler(async (req, res) => {
 
   const updatedtodo = await Todo.findByIdAndUpdate(
     req.params.id,
-    { completed },
+    { $set: { completed } },
     {
       new: true,
-      runValidators: true,
-      useFindAndModify: false,
     }
   );
   if (!updatedtodo)
-    return new ApiError(501, "Something went wrong while updating todo");
+    throw new ApiError(501, "Something went wrong while updating todo");
   res
     .status(200)
     .json(
-      new ApiResponse(200, updatedtodo, "todo status updated successfully")
+      new ApiResponse(
+        200,
+        "todo status updated successfully",
+        "updatedtodo",
+        updatedtodo
+      )
     );
 });
 

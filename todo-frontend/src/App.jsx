@@ -1,23 +1,24 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Todos from "./Todos";
-import Auth from "./components/auth/Auth.jsx";
-import Signup from "./components/auth/Signup.jsx";
-import Signin from "./components/auth/Signin.jsx";
-import PagenotFound from "./components/PagenotFound";
-
+import Register from "./pages/Register.jsx";
+import Login from "./pages/Login.jsx";
+import PersistLogin from "./auth/PersistLogin.jsx";
+import ProtectedRoute from "./auth/ProtectedRoute.jsx";
+import PagenotFound from "./pages/PagenotFound.jsx";
+import Home from "./pages/Home.jsx";
 function App() {
   return (
-    <div>
-      <Routes>
-        <Route path="/" element={<Todos />} />
-        <Route path="/auth" element={<Auth />}>
-          <Route path="" element={<Signin />} />
-          <Route path="signup" element={<Signup />} />
+    <Routes>
+      <Route path="/register" element={<Register />} />
+      <Route path="/signin" element={<Login />} />
+      <Route element={<PersistLogin />}>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<Todos />} />
         </Route>
-        <Route path="*" element={<PagenotFound />} />
-      </Routes>
-    </div>
+      </Route>
+      <Route path="*" element={<PagenotFound />} />
+    </Routes>
   );
 }
 

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 
-const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
+const Addtodo = ({ setChanged, setShow, todoId, setTodoId, setErr }) => {
   const [todo, setTodo] = useState({});
 
   useEffect(() => {
@@ -12,7 +12,7 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
         .then((res) => {
           setTodo(res.data.data);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => setErr(err.message));
     }
   }, [todoId]);
 
@@ -26,7 +26,7 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
       });
       console.log(res.data);
     } catch (error) {
-      console.log(error);
+      setErr(error.message);
     }
     setTodoId("");
     setTodo({});
