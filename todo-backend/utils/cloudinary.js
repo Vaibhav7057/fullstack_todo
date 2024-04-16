@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
+import { ApiError } from "./ApiError.js";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -25,9 +26,11 @@ const uploadOnCloudinary = async (localFilePath) => {
 
 const deleteFromCloudinary = async (image_public_id) => {
   try {
-    if (!image_public_id) console.log("Please provide image public id");
+    if (!image_public_id)
+      throw new ApiError(401, "Please provide image public id");
 
-    await cloudinary.uploader.destroy(image_public_id);
+    const response = await cloudinary.uploader.destroy(image_public_id);
+    return response;
   } catch (error) {
     console.log(error.message);
   }

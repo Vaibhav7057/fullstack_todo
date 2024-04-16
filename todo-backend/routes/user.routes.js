@@ -6,9 +6,11 @@ import {
   refreshAccessToken,
   forgotPassword,
   resetPassword,
+  deleteaccount,
   updatePassword,
   updateAccountDetails,
   updatephoto,
+  deletephoto,
   getUserDetails,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
@@ -27,12 +29,14 @@ router.route("/logout").get(verifyJWT, logoutUser);
 router.route("/password/forgot").post(verifyJWT, forgotPassword);
 
 router.route("/password/reset").post(verifyJWT, resetPassword);
+router.route("/deleteaccount").delete(verifyJWT, deleteaccount);
 
 router.route("/password/update").put(verifyJWT, updatePassword);
 router.route("/me/update").put(verifyJWT, updateAccountDetails);
 router
   .route("/updateprofilephoto")
   .post(verifyJWT, upload.single("profilephoto"), updatephoto);
+router.route("/deleteprofilephoto/:public_id").post(verifyJWT, deletephoto);
 
 router.route("/me").get(verifyJWT, getUserDetails);
 

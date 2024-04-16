@@ -5,7 +5,9 @@ import useRefresh from "./useRefresh";
 
 const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const { accessToken, persist } = useSelector((state) => state.user);
+  const { accessToken } = useSelector((state) => state.user);
+  const persist = localStorage.getItem("persist") || false;
+
   const refresh = useRefresh();
 
   useEffect(() => {
@@ -21,7 +23,7 @@ const PersistLogin = () => {
       }
     };
 
-    !accessToken && persist ? verifyRefreshToken() : setIsLoading(false);
+    persist && !accessToken ? verifyRefreshToken() : setIsLoading(false);
 
     return () => (isMounted = false);
   }, []);

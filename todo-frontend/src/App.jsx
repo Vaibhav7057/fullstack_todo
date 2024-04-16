@@ -6,7 +6,7 @@ import Login from "./pages/Login.jsx";
 import PersistLogin from "./auth/PersistLogin.jsx";
 import ProtectedRoute from "./auth/ProtectedRoute.jsx";
 import PagenotFound from "./pages/PagenotFound.jsx";
-import Home from "./pages/Home.jsx";
+import Updatephoto from "./components/Updatephoto.jsx";
 function App() {
   return (
     <Routes>
@@ -15,6 +15,12 @@ function App() {
       <Route element={<PersistLogin />}>
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Todos />} />
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/updatephoto" element={<Updatephoto />} />
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/deletephoto/:public_id" element={<Updatephoto />} />
         </Route>
       </Route>
       <Route path="*" element={<PagenotFound />} />

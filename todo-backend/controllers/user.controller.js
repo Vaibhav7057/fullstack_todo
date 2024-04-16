@@ -1,4 +1,5 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { v2 as cloudinary } from "cloudinary";
 import mongoose from "mongoose";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
@@ -83,6 +84,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true,
     secure: true,
+    maxAge: 10 * 24 * 60 * 60 * 1000,
   };
 
   return res
@@ -119,7 +121,6 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken = req.cookies?.refreshToken;
-
   if (!incomingRefreshToken) {
     throw new ApiError(401, "unauthorized request");
   }
@@ -129,6 +130,9 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       incomingRefreshToken,
       process.env.REFRESH_TOKEN_SECRET
     );
+    if (decodedToken.exp < Date.now() / 1000) {
+      throw new ApiError(401, "refresh token has expired");
+    }
     if (!decodedToken?._id) {
       throw new ApiError(401, "Invalid refresh token");
     }
@@ -136,7 +140,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     const user = await User.findById(decodedToken?._id).select("+refreshToken");
 
     if (!user) {
-      throw new ApiError(401, "Invalid refresh token");
+      throw new ApiError(401, "Invalid user refresh token");
     }
 
     if (incomingRefreshToken !== user?.refreshToken) {
@@ -240,13 +244,18 @@ const getUserDetails = asyncHandler(async (req, res, next) => {
       },
     },
     {
+      $addFields: {
+        alltodos: "$todos",
+      },
+    },
+    {
       $project: {
         _id: 1,
         email: 1,
         fullName: 1,
         monumber: 1,
         profilephoto: 1,
-        todos: 1,
+        alltodos: 1,
       },
     },
   ]);
@@ -309,7 +318,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 });
 
 const updatephoto = asyncHandler(async (req, res, next) => {
-  // const userId = req.user._id;
+  const userId = req.user._id;
 
   const avatarLocalPath = req.file?.path;
   if (!avatarLocalPath) throw new ApiError(404, "file not found");
@@ -337,12 +346,56 @@ const updatephoto = asyncHandler(async (req, res, next) => {
     .json(
       new ApiResponse(
         200,
-        user,
-        "your profile photo has been updated successfully"
+        "your profile photo has been updated successfully",
+        "imgUrl",
+        profilephoto.url
       )
     );
 });
 
+const deletephoto = asyncHandler(async (req, res, next) => {
+  const userId = req.user._id;
+  const { public_id } = req.params;
+  const response = await deleteFromCloudinary(public_id);
+  if (response.result != "ok") throw new ApiError(404, "file deletion failed");
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { $set: { profilephoto: "" } },
+    {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    }
+  );
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        "your profile photo has been deleted successfully",
+        "response",
+        response
+      )
+    );
+});
+
+const deleteaccount = asyncHandler(async (req, res, next) => {
+  const userId = req.user._id;
+  const { public_id } = req.body;
+  if (public_id) {
+    await cloudinary.uploader.destroy(public_id);
+  }
+  await Todo.deleteMany({ owner: userId });
+  const updatedUser = await User.findByIdAndDelete(userId);
+  if (!updatedUser) {
+    throw new ApiError(401, "error occured while deleting your account");
+  }
+  res
+    .status(200)
+    .json(new ApiResponse(200, "your account has been deleted successfully"));
+});
 export {
   registerUser,
   loginUser,
@@ -350,8 +403,10 @@ export {
   refreshAccessToken,
   forgotPassword,
   resetPassword,
+  deleteaccount,
   updatePassword,
   updateAccountDetails,
   updatephoto,
+  deletephoto,
   getUserDetails,
 };

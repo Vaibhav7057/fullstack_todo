@@ -14,7 +14,6 @@ const todoSchema = new Schema({
   },
   deadline: {
     type: Date,
-    select: false,
   },
   completed: {
     type: Boolean,

@@ -6,7 +6,6 @@ import axios from "axios";
 
 const Login = () => {
   const [persist, setPersist] = useState(false);
-  const [errMsg, setErrMsg] = useState("");
   const [user, setUser] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -14,7 +13,6 @@ const Login = () => {
   const from = location.state?.from?.pathname || "/";
 
   const emailRef = useRef();
-  const errRef = useRef();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,9 +37,8 @@ const Login = () => {
         if (!error.response) {
           setErrMsg("No Server Response");
         } else {
-          setErrMsg(err);
+          console.log(err);
         }
-        errRef.current.focus();
       });
   };
 
@@ -50,22 +47,15 @@ const Login = () => {
   };
 
   useEffect(() => {
-    localStorage.setItem("persist", JSON.stringify(persist));
+    localStorage.setItem("persist", persist);
   }, [persist]);
 
   useEffect(() => {
     emailRef.current.focus();
   }, []);
 
-  useEffect(() => {
-    setErrMsg("");
-  }, [user]);
-
   return (
     <section>
-      <p ref={errRef} className={errMsg ? "block" : "hidden"}>
-        {errMsg}
-      </p>
       <h1>Sign In</h1>
       <form onSubmit={handleSubmit}>
         <label htmlFor="email">Email:</label>

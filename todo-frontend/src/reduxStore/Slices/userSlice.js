@@ -2,8 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 let initialState = {
   userDetails: null,
-  accessToken: null,
-  persist: JSON.parse(localStorage.getItem("persist")) || false,
+  accessToken: "",
   error: null,
 };
 
@@ -16,8 +15,7 @@ const userSlice = createSlice({
     },
     logout: (state) => {
       state.userDetails = null;
-      state.accessToken = null;
-      state.persist = false;
+      state.accessToken = "";
       state.error = null;
     },
     setUserDetails: (state, action) => {

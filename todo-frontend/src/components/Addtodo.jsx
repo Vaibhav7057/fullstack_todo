@@ -1,32 +1,37 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import axios from "axios";
+import PrivatePath from "../auth/PrivatePath";
 
-const Addtodo = ({ setChanged, setShow, todoId, setTodoId, setErr }) => {
+const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
   const [todo, setTodo] = useState({});
+  const secureAxios = PrivatePath();
 
   useEffect(() => {
     if (todoId) {
-      axios
+      secureAxios
         .get(`/api/todos/getsingletodo/${todoId}`)
         .then((res) => {
-          setTodo(res.data.data);
+          setTodo(res.data.todo);
         })
-        .catch((err) => setErr(err.message));
+        .catch((err) => console.log(err.message));
     }
   }, [todoId]);
 
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const res = await axios({
+      const res = await secureAxios({
         method: todoId ? "PUT" : "POST",
         url: `/api/todos/${todoId ? "edittodo/" + todoId : "createtodo"}`,
         data: todo,
       });
       console.log(res.data);
-    } catch (error) {
-      setErr(error.message);
+    } catch (err) {
+      if (!err.response) {
+        console.log("no server response");
+      } else {
+        console.log(err.response?.data);
+      }
     }
     setTodoId("");
     setTodo({});

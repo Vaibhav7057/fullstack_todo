@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import { useSelector, useDispatch } from "react-redux";
-import axios from "axios";
 import { todoSuccess } from "./reduxStore/Slices/todoSlice";
 import Addtodo from "./components/Addtodo";
 import Profile from "./components/Profile";
@@ -41,9 +40,7 @@ const Todos = () => {
     const getuserdetails = async () => {
       try {
         const res = await secureAxios.get("/api/user/me");
-        if (res.data?.success) {
-          dispatch(setUserDetails(res.data.user));
-        }
+        dispatch(setUserDetails(res.data.user));
       } catch (err) {
         if (!err.response) {
           console.log("no server response");
@@ -54,29 +51,37 @@ const Todos = () => {
     };
 
     getuserdetails();
-  }, [userDetails]);
+  }, []);
 
   async function deleteTodo(id) {
-    await axios
+    await secureAxios
       .delete(`/api/todos/deletetodo/${id}`)
       .then((res) => {
         console.log(res);
         setChanged((pre) => !pre);
       })
       .catch((err) => {
-        console.log(err);
+        if (!err.response) {
+          console.log("no server response");
+        } else {
+          console.log(err.response?.data);
+        }
       });
   }
 
   async function editStatus(id, completed) {
-    await axios
+    await secureAxios
       .put(`/api/todos/editstatus/${id}`, { completed })
       .then((res) => {
         console.log(res);
         setChanged((pre) => !pre);
       })
       .catch((err) => {
-        console.log(err);
+        if (!err.response) {
+          console.log("no server response");
+        } else {
+          console.log(err.response?.data);
+        }
       });
   }
 
@@ -86,7 +91,6 @@ const Todos = () => {
     } else {
       const result = todos.filter((todo) => todo.title.includes(key));
       setFilteredTodos(result);
-      console.log(filteredTodos);
     }
   }
 
@@ -135,11 +139,12 @@ const Todos = () => {
         </div>
 
         <div className="w-full py-3 px-2 bg-[#E3DAFF] rounded-lg mt-2 overflow-auto">
-          {!filteredTodos ? (
+          {!filteredTodos?.length && (
             <p className="text-center">
               there are no todos to show, create one !
             </p>
-          ) : (
+          )}
+          {filteredTodos?.length > 0 && (
             <Fragment>
               <table className="w-full">
                 <thead>
@@ -157,7 +162,9 @@ const Todos = () => {
                   {filteredTodos?.map((todo, i) => (
                     <tr
                       key={todo._id}
-                      className="grid grid-cols-12 border-b-2 border-slate-600 py-1 text-xs "
+                      className={`grid grid-cols-12 border-b-2 border-slate-600 py-1 text-[15px]  ${
+                        todo.completed ? "line-through" : ""
+                      }`}
                     >
                       <td className=" col-span-.5 place-self-center px-1 ">
                         {i + 1}
@@ -169,32 +176,69 @@ const Todos = () => {
                         {todo.description}
                       </td>
                       <td className=" col-span-1.5 place-self-center px-1 ">
-                        {todo.createdAt}
+                        {new Date(todo.createdAt).toLocaleDateString(
+                          undefined,
+                          {
+                            year: "numeric",
+                            month: "numeric",
+                            day: "numeric",
+                          }
+                        )}{" "}
+                        <br />
+                        {new Date(todo.createdAt).toLocaleTimeString(
+                          undefined,
+                          {
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: true,
+                          }
+                        )}
                       </td>
                       <td className=" col-span-2 place-self-center px-1 mx-1 ">
-                        {todo.deadline}
+                        {todo.deadline &&
+                          new Date(todo.deadline).toLocaleDateString(
+                            undefined,
+                            {
+                              year: "numeric",
+                              month: "numeric",
+                              day: "numeric",
+                            }
+                          )}{" "}
+                        <br />
+                        {todo.deadline &&
+                          new Date(todo.deadline).toLocaleTimeString(
+                            undefined,
+                            {
+                              hour: "numeric",
+                              minute: "numeric",
+                              hour12: true,
+                            }
+                          )}
                       </td>
-                      <td className=" col-span-1 place-self-center px-1 ">
-                        {todo.completed ? "Completed" : "Pending"}{" "}
+                      <td className=" col-span-1 place-self-center px-1">
                         <input
                           type="checkbox"
                           defaultChecked={todo.completed}
                           name="status"
+                          id={i + 1}
                           onClick={(e) => {
                             editStatus(todo._id, !todo.completed);
                           }}
                         />
+                        <label htmlFor={i + 1}>
+                          {todo.completed ? "Completed" : "Pending"}
+                        </label>
                       </td>
-                      <td className=" col-span-2 place-self-center px-1">
+                      <td className=" col-span-2 place-self-center text-center px-1">
                         <button
                           disabled={todo.completed}
                           onClick={() => {
                             setShow(true);
                             setTodoId(todo._id);
                           }}
-                          className={`px-3 py-1 ${
+                          className={`px-2 mt-0 py-1 ${
                             todo.completed ? "bg-[#38419D]" : "bg-green-700"
-                          } place-self-center rounded-md text-white font-thin text-xs`}
+                          } place-self-center rounded-md text-white font-thin text-[13px]`}
                         >
                           Edit
                         </button>
@@ -202,7 +246,7 @@ const Todos = () => {
                           onClick={(e) => {
                             deleteTodo(todo._id);
                           }}
-                          className="px-3 py-1  bg-red-700 place-self-center rounded-md text-white font-thin text-xs ml-1 "
+                          className="px-2 mt-0 py-1  bg-red-700 place-self-center rounded-md text-white font-thin text-[13px] ml-1 "
                         >
                           Delete
                         </button>
@@ -224,7 +268,6 @@ const Todos = () => {
               setShow={setShow}
               todoId={todoId}
               setTodoId={setTodoId}
-              setErr={setErr}
             />
           </div>
         )}
