@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { Todo } from "../models/todo.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js";
+import mongoose from "mongoose";
 
 const addtodo = asyncHandler(async (req, res) => {
   const { title, description, deadline } = req.body;
@@ -54,11 +55,52 @@ const findsingletodo = asyncHandler(async (req, res) => {
 
 const findtodo = asyncHandler(async (req, res) => {
   const userid = req.user._id;
-  const alltodos = await Todo.find({ owner: userid });
+  const { limit, skip } = req.query;
+  const alltodos = await Todo.find({ owner: userid }).skip(skip).limit(limit);
+  const numberOfTodos = await Todo.find({ owner: userid }).countDocuments();
+
   if (!alltodos) {
     throw new ApiError(404, "you are not a valid user");
   }
-  res.json(new ApiResponse(200, "here are your todos!", "todos", alltodos));
+  const newResponse = new ApiResponse(
+    200,
+    "here are your todos!",
+    "todos",
+    alltodos
+  );
+  newResponse.numberOfTodos = numberOfTodos;
+  res.status(200).json(newResponse);
+});
+
+const searchtodo = asyncHandler(async (req, res) => {
+  const userid = req.user._id;
+  const { limit, skip, searchkey } = req.query;
+  const alltodos = await Todo.find({
+    $and: [
+      { owner: userid },
+      { title: { $regex: new RegExp(searchkey, "i") } },
+    ],
+  })
+    .skip(skip)
+    .limit(limit);
+  const numberOfTodos = await Todo.find({
+    $and: [
+      { owner: userid },
+      { title: { $regex: new RegExp(searchkey, "i") } },
+    ],
+  }).countDocuments();
+
+  if (!alltodos) {
+    throw new ApiError(404, "you are not a valid user");
+  }
+  const newResponse = new ApiResponse(
+    200,
+    "here are your todos!",
+    "todos",
+    alltodos
+  );
+  newResponse.numberOfTodos = numberOfTodos;
+  res.status(200).json(newResponse);
 });
 
 const updatetodo = asyncHandler(async (req, res) => {
@@ -120,6 +162,7 @@ export {
   addtodo,
   removetodo,
   findtodo,
+  searchtodo,
   findsingletodo,
   updatetodo,
   updatetodostatus,

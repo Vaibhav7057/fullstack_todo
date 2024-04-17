@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import useLogout from "../auth/useLogout";
 import Updatephoto from "./Updatephoto";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const logout = useLogout();
@@ -10,6 +11,7 @@ const Profile = () => {
   const [operation, setOperation] = useState("delete");
   const { userDetails } = useSelector((state) => state.user);
   const public_id = userDetails?.profilephoto?.public_id;
+  const navigate = useNavigate();
   return (
     <div className={`w-[250px] ${img ? "" : "relative"} `}>
       {img && (
@@ -62,7 +64,10 @@ const Profile = () => {
         <li className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 ">
           Update Info
         </li>
-        <li className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 ">
+        <li
+          className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 "
+          onClick={() => navigate("/deleteaccount")}
+        >
           Delete Account
         </li>
         <li

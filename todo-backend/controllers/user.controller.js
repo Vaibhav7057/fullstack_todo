@@ -383,7 +383,7 @@ const deletephoto = asyncHandler(async (req, res, next) => {
 
 const deleteaccount = asyncHandler(async (req, res, next) => {
   const userId = req.user._id;
-  const { public_id } = req.body;
+  const { public_id } = req.query;
   if (public_id) {
     await cloudinary.uploader.destroy(public_id);
   }
@@ -392,9 +392,22 @@ const deleteaccount = asyncHandler(async (req, res, next) => {
   if (!updatedUser) {
     throw new ApiError(401, "error occured while deleting your account");
   }
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
   res
     .status(200)
-    .json(new ApiResponse(200, "your account has been deleted successfully"));
+    .clearCookie("refreshToken", options)
+    .json(
+      new ApiResponse(
+        200,
+        "your account has been deleted successfully",
+        "id",
+        public_id
+      )
+    );
 });
 export {
   registerUser,

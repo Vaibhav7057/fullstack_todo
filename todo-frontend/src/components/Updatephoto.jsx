@@ -3,6 +3,7 @@ import PrivatePath from "../auth/PrivatePath";
 import { useSelector } from "react-redux";
 import { setUserDetails } from "../reduxStore/Slices/userSlice";
 import { useDispatch } from "react-redux";
+import { AiOutlineCloudUpload } from "react-icons/ai";
 
 const Updatephoto = ({ setImg, public_id, operation }) => {
   const [profilephoto, setprofilephoto] = useState(null);
@@ -61,9 +62,9 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
   };
 
   return (
-    <div className="bg-white rounded-md px-5 py-3 flex gap-3">
+    <div className="">
       {operation === "update" && (
-        <div className="">
+        <div className="bg-white rounded-md px-5 pb-3 flex gap-3">
           <input
             type="file"
             onChange={(e) => setprofilephoto(e.target.files[0])}
@@ -74,14 +75,17 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
           />
           <label
             htmlFor="upload"
-            className="bg-orange-900 px-2 py-1 rounded-md text-white mr-3 "
+            className="bg-orange-900 px-3 py-2 rounded-md text-white mr-3 text-xs hover:cursor-pointer flex justify-center items-center gap-2 "
           >
-            Upload Photo
+            <span>
+              <AiOutlineCloudUpload />
+            </span>
+            Add Photo
           </label>
-          <button onClick={upload} className="mt-0 bg-green-300 ">
+          <button onClick={upload} className=" bg-green-300 ">
             Update
           </button>
-          <button onClick={() => setImg(false)} className="mt-0 bg-red-300 ">
+          <button onClick={() => setImg(false)} className=" bg-red-300 ">
             Cancel
           </button>
         </div>
