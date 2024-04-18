@@ -13,7 +13,11 @@ const sendEmail = async (options) => {
   });
 
   const mailOptions = {
-    from: process.env.SMPT_MAIL,
+    from: {
+      name: "Gedam Ecosystem",
+      address: process.env.SMPT_MAIL,
+    },
+
     to: options.email,
     subject: options.subject,
     text: options.message,

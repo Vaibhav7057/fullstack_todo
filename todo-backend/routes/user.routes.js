@@ -26,7 +26,7 @@ router.route("/refresh").get(refreshAccessToken);
 
 router.route("/logout").get(verifyJWT, logoutUser);
 
-router.route("/password/forgot").post(verifyJWT, forgotPassword);
+router.route("/password/forgot").post(forgotPassword);
 
 router.route("/password/reset").post(verifyJWT, resetPassword);
 router.route("/deleteaccount").delete(verifyJWT, deleteaccount);
