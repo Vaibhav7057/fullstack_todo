@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PrivatePath from "../auth/PrivatePath";
+import { AiFillEye } from "react-icons/ai";
+import { AiFillEyeInvisible } from "react-icons/ai";
 
 const Changepass = () => {
   const [password, setPassword] = useState({});
+  const [showPass, setShowPass] = useState(false);
+  const [showOldPass, setShowOldPass] = useState(false);
+  const [showConPass, setShowConPass] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const navigate = useNavigate();
 
@@ -42,35 +47,50 @@ const Changepass = () => {
       <h1>Change your accout password</h1>
       <form onSubmit={handleSubmit}>
         <label htmlFor="oldPassword">Old Password:</label>
-        <input
-          type="password"
-          id="oldPassword"
-          name="oldPassword"
-          value={password.oldPassword?.toString() || ""}
-          onChange={handleChange}
-          placeholder="Old Password"
-          required
-        />
+        <div>
+          <input
+            type={showOldPass ? "text" : "password"}
+            id="oldPassword"
+            name="oldPassword"
+            value={password.oldPassword?.toString() || ""}
+            onChange={handleChange}
+            placeholder="Old Password"
+            required
+          />
+          <span onClick={() => setShowOldPass((pre) => !pre)}>
+            {showOldPass ? <AiFillEye /> : <AiFillEyeInvisible />}
+          </span>
+        </div>
         <label htmlFor="newPassword">New Password:</label>
-        <input
-          type="password"
-          id="newPassword"
-          name="newPassword"
-          value={password.newPassword?.toString() || ""}
-          onChange={handleChange}
-          placeholder="New Password"
-          required
-        />
+        <div>
+          <input
+            type={showPass ? "text" : "password"}
+            id="newPassword"
+            name="newPassword"
+            value={password.newPassword?.toString() || ""}
+            onChange={handleChange}
+            placeholder="New Password"
+            required
+          />
+          <span onClick={() => setShowPass((pre) => !pre)}>
+            {showPass ? <AiFillEye /> : <AiFillEyeInvisible />}
+          </span>
+        </div>
         <label htmlFor="confirmPassword">Confirm Password:</label>
-        <input
-          type="password"
-          id="confirmPassword"
-          name="confirmPassword"
-          value={password.confirmPassword?.toString() || ""}
-          onChange={handleChange}
-          placeholder="Confirm Password"
-          required
-        />
+        <div>
+          <input
+            type={showConPass ? "text" : "password"}
+            id="confirmPassword"
+            name="confirmPassword"
+            value={password.confirmPassword?.toString() || ""}
+            onChange={handleChange}
+            placeholder="Confirm Password"
+            required
+          />
+          <span onClick={() => setShowConPass((pre) => !pre)}>
+            {showConPass ? <AiFillEye /> : <AiFillEyeInvisible />}
+          </span>
+        </div>
         <button>Update</button>
       </form>
       <button onClick={() => navigate(-1)}>Back</button>

@@ -1,10 +1,12 @@
 import { useRef, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { AiFillEye } from "react-icons/ai";
+import { AiFillEyeInvisible } from "react-icons/ai";
 const Register = () => {
   const [errMsg, setErrMsg] = useState("");
   const [user, setUser] = useState({});
+  const [showPass, setShowPass] = useState(false);
   const navigate = useNavigate();
 
   const nameRef = useRef();
@@ -88,15 +90,20 @@ const Register = () => {
         />
 
         <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={user.password || ""}
-          onChange={handleChange}
-          placeholder="enter your account password"
-          required
-        />
+        <div>
+          <input
+            type={showPass ? "text" : "password"}
+            id="password"
+            name="password"
+            value={user.password?.toString() || ""}
+            onChange={handleChange}
+            placeholder="enter your account password"
+            required
+          />
+          <span onClick={() => setShowPass((pre) => !pre)}>
+            {showPass ? <AiFillEye /> : <AiFillEyeInvisible />}
+          </span>
+        </div>
         <button>Create Account</button>
       </form>
       <p>

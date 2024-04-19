@@ -2,11 +2,14 @@ import { useRef, useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setAccessToken } from "../reduxStore/Slices/userSlice";
+import { AiFillEye } from "react-icons/ai";
+import { AiFillEyeInvisible } from "react-icons/ai";
 import axios from "axios";
 
 const Login = () => {
   const [persist, setPersist] = useState(false);
   const [user, setUser] = useState({});
+  const [showPass, setShowPass] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -72,15 +75,20 @@ const Login = () => {
         />
 
         <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={user.password?.toString() || ""}
-          onChange={handleChange}
-          placeholder="enter your account password"
-          required
-        />
+        <div>
+          <input
+            type={showPass ? "text" : "password"}
+            id="password"
+            name="password"
+            value={user.password?.toString() || ""}
+            onChange={handleChange}
+            placeholder="enter your account password"
+            required
+          />
+          <span onClick={() => setShowPass((pre) => !pre)}>
+            {showPass ? <AiFillEye /> : <AiFillEyeInvisible />}
+          </span>
+        </div>
         <button>Sign In</button>
         <div className="persistCheck">
           <input
