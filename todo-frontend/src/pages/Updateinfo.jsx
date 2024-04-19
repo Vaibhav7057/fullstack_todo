@@ -1,62 +1,56 @@
-import { useRef, useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-
-const Register = () => {
-  const [errMsg, setErrMsg] = useState("");
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import PrivatePath from "../auth/PrivatePath";
+import { useSelector, useDispatch } from "react-redux";
+import { setUserDetails } from "../reduxStore/Slices/userSlice";
+const Updateinfo = () => {
   const [user, setUser] = useState({});
+  const [errMsg, setErrMsg] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { userDetails } = useSelector((state) => state.user);
 
-  const nameRef = useRef();
-  const errRef = useRef();
-
+  const secureAxios = PrivatePath();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser((pre) => ({ ...pre, [name]: value }));
   };
+  useEffect(() => {
+    setUser(userDetails);
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .post("/api/user/register", user, {
+    secureAxios
+      .patch("/api/user/me/update", user, {
         headers: { "Content-Type": "application/json" },
-        withCredentials: true,
       })
       .then((res) => {
+        console.log(res.data);
         setUser({});
-        navigate("/signin");
+        dispatch(setUserDetails(res.data.user));
+        navigate("/");
       })
       .catch((error) => {
         const err = error.response.data;
-        if (!error.response) {
-          setErrMsg("No Server Response");
+        if (!error.response.data) {
+          console.log(err.response);
         } else {
-          setErrMsg(err);
+          setErrMsg(err.message);
+          console.log(err);
         }
-        errRef.current.focus();
       });
   };
 
-  useEffect(() => {
-    nameRef.current.focus();
-  }, []);
-
-  useEffect(() => {
-    setErrMsg("");
-  }, [user]);
-
   return (
     <section>
-      <p ref={errRef} className={errMsg ? "block" : "hidden"}>
-        {errMsg}
-      </p>
-      <h1>Become a Member</h1>
+      <p className={errMsg ? "block" : "hidden"}>{errMsg}</p>
+      <h1>Update Your Details</h1>
       <form onSubmit={handleSubmit}>
         <label htmlFor="fullName">Fullname:</label>
         <input
           type="text"
           id="fullName"
-          ref={nameRef}
           autoComplete="off"
           name="fullName"
           value={user.fullName || ""}
@@ -84,30 +78,16 @@ const Register = () => {
           value={user.monumber?.toString() || ""}
           onChange={handleChange}
           placeholder="enter mobile number"
-          required
         />
-
-        <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={user.password || ""}
-          onChange={handleChange}
-          placeholder="enter your account password"
-          required
-        />
-        <button>Create Account</button>
+        <button>Update</button>
       </form>
-      <p>
-        Already have Account?
-        <br />
-        <span className="line">
-          <Link to="/signin">Login</Link>
-        </span>
-      </p>
+      <button onClick={() => navigate(-1)}>Back</button>
     </section>
   );
 };
 
-export default Register;
+export default Updateinfo;
+
+// navigate("/login", { state: { from: location }, replace: true });
+// const from = location.state?.from?.pathname || "/";
+// navigate(from, { replace: true });

@@ -28,11 +28,11 @@ router.route("/logout").get(verifyJWT, logoutUser);
 
 router.route("/password/forgot").post(forgotPassword);
 
-router.route("/password/reset").post(verifyJWT, resetPassword);
+router.route("/password/reset").post(resetPassword);
 router.route("/deleteaccount").delete(verifyJWT, deleteaccount);
 
-router.route("/password/update").put(verifyJWT, updatePassword);
-router.route("/me/update").put(verifyJWT, updateAccountDetails);
+router.route("/password/update").patch(verifyJWT, updatePassword);
+router.route("/me/update").patch(verifyJWT, updateAccountDetails);
 router
   .route("/updateprofilephoto")
   .post(verifyJWT, upload.single("profilephoto"), updatephoto);

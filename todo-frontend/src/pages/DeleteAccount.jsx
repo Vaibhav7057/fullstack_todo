@@ -15,10 +15,10 @@ const DeleteAccount = () => {
       .delete(`/api/user/deleteaccount/?public_id=${public_id}`)
       .then((res) => {
         console.log(res.data);
-        dispatch(setUserDetails(res.data.user));
+        dispatch(setUserDetails(null));
         navigate("/register");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err.response));
   };
   return (
     <div className="w-screen h-screen bg-slate-400 flex justify-center items-center ">

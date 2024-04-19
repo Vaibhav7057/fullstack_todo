@@ -99,6 +99,9 @@ const Login = () => {
           <Link to="/register">Sign Up</Link>
         </span>
       </p>
+      <span className="line">
+        <Link to="/forgotpass">forgot password</Link>
+      </span>
     </section>
   );
 };

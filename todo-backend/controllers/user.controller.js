@@ -3,6 +3,7 @@ import { v2 as cloudinary } from "cloudinary";
 import mongoose from "mongoose";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
+import { Todo } from "../models/todo.model.js";
 import {
   uploadOnCloudinary,
   deleteFromCloudinary,
@@ -168,7 +169,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    throw new ApiError(404, "User does not exist");
+    throw new ApiError(404, "User does not exists");
   }
 
   const resetOtp = user.passwordResetOtp();
@@ -198,14 +199,13 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 });
 
 const resetPassword = asyncHandler(async (req, res, next) => {
-  const { resetPasswordOtp, password, confirmPassword } = req.body;
-  if (!(resetPasswordOtp || password || confirmPassword)) {
+  const { resetPasswordOtp, newPassword, confirmPassword } = req.body;
+  if (!resetPasswordOtp || !newPassword || !confirmPassword) {
     throw new ApiError(400, "please enter OTP and new password");
   }
 
   const user = await User.findOne({
-    resetPasswordOtp,
-    resetPasswordExpire: { $gt: Date.now() },
+    $and: [{ resetPasswordOtp }, { resetPasswordExpire: { $gt: Date.now() } }],
   });
 
   if (!user) {
@@ -215,11 +215,11 @@ const resetPassword = asyncHandler(async (req, res, next) => {
     );
   }
 
-  if (password !== confirmPassword) {
+  if (newPassword !== confirmPassword) {
     throw new ApiError(400, "Password does not match");
   }
 
-  user.password = password;
+  user.password = newPassword;
   user.resetPasswordOtp = undefined;
   user.resetPasswordExpire = undefined;
 
@@ -271,7 +271,7 @@ const getUserDetails = asyncHandler(async (req, res, next) => {
 
 const updatePassword = asyncHandler(async (req, res, next) => {
   const { oldPassword, newPassword, confirmPassword } = req.body;
-  if (!(oldPassword || newPassword || confirmPassword)) {
+  if (!oldPassword || !newPassword || !confirmPassword) {
     return res.json(new ApiError(400, "all fields are required"));
   }
 
@@ -284,7 +284,7 @@ const updatePassword = asyncHandler(async (req, res, next) => {
   }
 
   if (newPassword !== confirmPassword) {
-    throw new ApiError(400, "password does not match");
+    throw new ApiError(400, "new password is not same to confirm password");
   }
 
   user.password = newPassword;
@@ -295,9 +295,9 @@ const updatePassword = asyncHandler(async (req, res, next) => {
 });
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
-  const { fullName, email } = req.body;
+  const { fullName, email, monumber } = req.body;
 
-  if (!fullName || !email) {
+  if (!fullName || !email || !monumber) {
     throw new ApiError(400, "All fields are required");
   }
 
@@ -306,26 +306,32 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
     {
       $set: {
         fullName,
-        email: email,
+        email,
+        monumber,
       },
     },
     { new: true }
-  ).select("-password");
+  );
 
   return res
     .status(200)
-    .json(new ApiResponse(200, user, "Account details updated successfully"));
+    .json(
+      new ApiResponse(200, "Account details updated successfully", "user", user)
+    );
 });
 
 const updatephoto = asyncHandler(async (req, res, next) => {
   const userId = req.user._id;
-
+  const { public_id } = req.body;
   const avatarLocalPath = req.file?.path;
   if (!avatarLocalPath) throw new ApiError(404, "file not found");
 
   const avatar = await uploadOnCloudinary(avatarLocalPath);
   if (!avatar) throw new ApiError(404, "file not found on server");
 
+  if (public_id) {
+    await cloudinary.uploader.destroy(public_id);
+  }
   let profilephoto = {
     public_id: avatar?.public_id || "",
     url: avatar?.secure_url || "",
@@ -400,14 +406,7 @@ const deleteaccount = asyncHandler(async (req, res, next) => {
   res
     .status(200)
     .clearCookie("refreshToken", options)
-    .json(
-      new ApiResponse(
-        200,
-        "your account has been deleted successfully",
-        "id",
-        public_id
-      )
-    );
+    .json(new ApiResponse(200, "your account has been deleted successfully"));
 });
 export {
   registerUser,

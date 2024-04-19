@@ -101,7 +101,7 @@ userSchema.methods.generateRefreshToken = function () {
 userSchema.methods.passwordResetOtp = function () {
   const resetOtp = Math.floor(Math.floor(100000 + Math.random() * 900000));
 
-  this.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
+  this.resetPasswordExpire = Date.now() + 5 * 60 * 1000;
   this.resetPasswordOtp = resetOtp;
 
   return resetOtp;

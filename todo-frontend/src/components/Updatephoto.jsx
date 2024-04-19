@@ -28,6 +28,7 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
   const upload = async function () {
     const formdata = new FormData();
     formdata.append("profilephoto", profilephoto);
+    formdata.append("public_id", userDetails.profilephoto?.public_id || "");
     await secureAxios
       .post("/api/user/updateprofilephoto", formdata, {
         headers: {

@@ -58,10 +58,16 @@ const Profile = () => {
         >
           Remove Photo
         </li>
-        <li className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 ">
+        <li
+          className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 "
+          onClick={() => navigate("/changepass")}
+        >
           Change Password
         </li>
-        <li className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 ">
+        <li
+          className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 "
+          onClick={() => navigate("/updateinfo")}
+        >
           Update Info
         </li>
         <li
