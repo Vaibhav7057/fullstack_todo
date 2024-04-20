@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
 import useRefresh from "./useRefresh";
+import Loader from "../components/Loader";
 
 const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -29,9 +30,7 @@ const PersistLogin = () => {
   }, []);
 
   return (
-    <div>
-      {!persist ? <Outlet /> : isLoading ? <p>Loading...</p> : <Outlet />}
-    </div>
+    <div>{!persist ? <Outlet /> : isLoading ? <Loader /> : <Outlet />}</div>
   );
 };
 

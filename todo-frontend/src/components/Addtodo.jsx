@@ -40,7 +40,7 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
   }
 
   return (
-    <div className="bg-white min-w-[400px] w-[30%] rounded-md p-7">
+    <div className="bg-white min-w-[400px] w-[30%] controldiv rounded-md p-7 h-96 mt-16 ">
       <form onSubmit={handleSubmit} className="flex flex-col ">
         <input
           type="text"
@@ -51,6 +51,7 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
           }
           placeholder="title for your todo"
           className="w-full py-1 px-2 outline-none bg-red-100 rounded-md "
+          required
         />{" "}
         <br />
         <textarea
@@ -76,7 +77,7 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
             }))
           }
         />
-        <div className="flex gap-5 justify-end mt-2">
+        <div className="flex gap-5 justify-end mt-5">
           <input
             type="button"
             name="cancelbtn"

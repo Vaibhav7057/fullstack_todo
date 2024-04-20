@@ -21,15 +21,18 @@ const DeleteAccount = () => {
       .catch((err) => console.log(err.response));
   };
   return (
-    <div className="w-screen h-screen bg-slate-400 flex justify-center items-center ">
+    <div className="w-screen h-screen bg-[#011015] text-white flex justify-center items-center ">
       <div className="">
         <p>Do you really want to delete your account?</p>
-        <div className="text-center">
-          <button className="bg-green-500 px-3 py-1 mr-3" onClick={leave}>
+        <div className="text-center mt-5">
+          <button
+            className="bg-green-500 px-3 py-1 mr-3 rounded-md"
+            onClick={leave}
+          >
             Yes
           </button>
           <button
-            className="bg-red-500 px-3 py-1 mr-3"
+            className="bg-red-500 px-3 py-1 mr-3 rounded-md"
             onClick={() => navigate(-1)}
           >
             No

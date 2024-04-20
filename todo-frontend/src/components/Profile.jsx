@@ -34,7 +34,7 @@ const Profile = () => {
         />
       </div>
       <ul
-        className={` absolute top-8 left-0 p-2 text-[15px] space-y-1 bg-slate-300 shadow-2xl ${
+        className={` absolute top-8 left-0 p-2 text-sm font-medium space-y-1 bg-slate-300 shadow-2xl ${
           showmenu ? "block" : "hidden"
         }  `}
       >

@@ -7,6 +7,7 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 
 const Updatephoto = ({ setImg, public_id, operation }) => {
   const [profilephoto, setprofilephoto] = useState(null);
+  const [loading, setLoading] = useState(false);
   const inputFile = useRef(null);
   const secureAxios = PrivatePath();
   const { userDetails } = useSelector((state) => state.user);
@@ -26,6 +27,7 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
   };
 
   const upload = async function () {
+    setLoading(true);
     const formdata = new FormData();
     formdata.append("profilephoto", profilephoto);
     formdata.append("public_id", userDetails.profilephoto?.public_id || "");
@@ -38,18 +40,20 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
       .then((res) => {
         getuserdetails();
         inputFile.current.value = null;
-        console.log(res.data.profilephoto.url);
+        setLoading(false);
         setImg(false);
       })
-      .catch((err) => setImg(false));
+      .catch((err) => setImg(false))
+      .finally(() => setLoading(false));
   };
 
   const deletephoto = async function () {
+    setLoading(true);
     await secureAxios
       .post(`/api/user/deleteprofilephoto/${public_id}`)
       .then((res) => {
         getuserdetails();
-        console.log(res.data.response);
+        setLoading(false);
         setImg(false);
       })
       .catch((err) => {
@@ -59,54 +63,85 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
           console.log(err.response?.data);
         }
         setImg(false);
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
     <div className="">
       {operation === "update" && (
-        <div className="bg-white rounded-md px-5 pb-3 flex gap-3">
-          <input
-            type="file"
-            onChange={(e) => setprofilephoto(e.target.files[0])}
-            ref={inputFile}
-            accept="image/*"
-            id="upload"
-            className="hidden"
-          />
-          <label
-            htmlFor="upload"
-            className="bg-orange-900 px-3 py-2 rounded-md text-white mr-3 text-xs hover:cursor-pointer flex justify-center items-center gap-2 "
-          >
-            <span>
-              <AiOutlineCloudUpload />
-            </span>
-            Add Photo
-          </label>
-          <button onClick={upload} className=" bg-green-300 ">
-            Update
-          </button>
-          <button onClick={() => setImg(false)} className=" bg-red-300 ">
-            Cancel
-          </button>
-        </div>
+        <>
+          <div className="bg-white rounded-md px-5 py-3 flex gap-3">
+            <input
+              type="file"
+              onChange={(e) => setprofilephoto(e.target.files[0])}
+              ref={inputFile}
+              accept="image/*"
+              id="upload"
+              className="hidden"
+            />
+            <label
+              htmlFor="upload"
+              className="bg-orange-900 px-3 py-2 rounded-md text-white mr-3 text-xs hover:cursor-pointer flex justify-center items-center gap-2 "
+            >
+              <span>
+                <AiOutlineCloudUpload />
+              </span>
+              Add Photo
+            </label>
+            <button
+              onClick={upload}
+              className=" bg-green-300 px-3 py-2 rounded-md  mr-3 text-xs "
+            >
+              Update
+            </button>
+            <button
+              onClick={() => setImg(false)}
+              className=" bg-red-300 px-3 py-2 rounded-md  text-xs"
+            >
+              Cancel
+            </button>
+          </div>
+          {loading ? (
+            <p className="text-center text-yellow-300">
+              ...processing your request
+            </p>
+          ) : (
+            ""
+          )}
+        </>
       )}
       {operation === "delete" && (
-        <div className="px-10 py-4 flex justify-between align-middle ">
-          <div className="w-[50px] mr-10 h-[50px] rounded-full overflow-hidden text-black hover:cursor-pointer">
-            <img
-              src={userDetails?.profilephoto?.url ?? "/images/user.png"}
-              alt="user photo"
-              className="w-full h-full"
-            />
+        <>
+          <div className="px-10 py-4 bg-white rounded-md flex justify-between items-center ">
+            <div className="w-[50px] mr-10 h-[50px] rounded-full overflow-hidden text-black hover:cursor-pointer">
+              <img
+                src={userDetails?.profilephoto?.url ?? "/images/user.png"}
+                alt="user photo"
+                className="w-full h-full"
+              />
+            </div>
+            <button
+              onClick={deletephoto}
+              className="mt-0 bg-green-300 px-3 py-2 rounded-md  mr-3 text-xs"
+            >
+              Delete Photo
+            </button>
+            <button
+              onClick={() => setImg(false)}
+              className="mt-0 bg-red-300 px-3 py-2 rounded-md  mr-3 text-xs"
+            >
+              Cancel
+            </button>
           </div>
-          <button onClick={deletephoto} className="mt-0 bg-green-300 ">
-            Delete Photo
-          </button>
-          <button onClick={() => setImg(false)} className="mt-0 bg-red-300 ">
-            Cancel
-          </button>
-        </div>
+          {loading ? (
+            <p className="text-center text-yellow-300">
+              ...processing your request
+            </p>
+          ) : (
+            ""
+          )}
+        </>
       )}
     </div>
   );

@@ -58,59 +58,79 @@ const Login = () => {
   }, []);
 
   return (
-    <section>
-      <h1>Sign In</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          ref={emailRef}
-          autoComplete="off"
-          name="email"
-          value={user.email || ""}
-          onChange={handleChange}
-          placeholder="enter your email"
-          required
-        />
-
-        <label htmlFor="password">Password:</label>
-        <div>
+    <div className="flex justify-center items-center flex-col ">
+      <h3 className="font-bold text-2xl sm:text-[2.5vmax] my-7">
+        Todo List App
+      </h3>
+      <section className="text-md pb-5 border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-2 ">
+        <h1 className="font-bold text-xl pl-7 text-indigo-950 my-4 ">
+          Sign In
+        </h1>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="email" className="font-bold text-sm ">
+            Email:
+          </label>
           <input
-            type={showPass ? "text" : "password"}
-            id="password"
-            name="password"
-            value={user.password?.toString() || ""}
+            type="email"
+            className="rounded-md px-2 mb-4 border border-1 border-slate-400 outline-none w-full placeholder:italic placeholder:text-slate-400 placeholder:text-sm"
+            id="email"
+            ref={emailRef}
+            autoComplete="off"
+            name="email"
+            value={user.email || ""}
             onChange={handleChange}
-            placeholder="enter your account password"
+            placeholder="enter your email"
             required
           />
-          <span onClick={() => setShowPass((pre) => !pre)}>
-            {showPass ? <AiFillEye /> : <AiFillEyeInvisible />}
-          </span>
+
+          <label htmlFor="password" className="font-bold text-sm ">
+            Password:
+          </label>
+          <div className="flex bg-white items-center mb-4 px-2 rounded-md border border-1 border-slate-400  ">
+            <input
+              type={showPass ? "text" : "password"}
+              className="outline-none w-full placeholder:italic placeholder:text-slate-400 placeholder:text-sm "
+              id="password"
+              name="password"
+              value={user.password?.toString() || ""}
+              onChange={handleChange}
+              placeholder="enter your account password"
+              required
+            />
+            <span
+              onClick={() => setShowPass((pre) => !pre)}
+              className="hover:cursor-pointer"
+            >
+              {showPass ? <AiFillEye /> : <AiFillEyeInvisible />}
+            </span>
+          </div>
+          <button className="bg-yellow-400 rounded-md text-center w-full text-black font-medium my-4">
+            Sign In
+          </button>
+          <div className="pl-4 flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="persist"
+              onChange={togglePersist}
+              checked={persist}
+            />
+            <label htmlFor="persist">Trust This Device</label>
+          </div>
+        </form>
+        <div className="mt-3 flex justify-around">
+          <p>Need an Account?</p>
+          <Link to="/register" className="underline block text-blue-700 ">
+            Sign Up
+          </Link>
         </div>
-        <button>Sign In</button>
-        <div className="persistCheck">
-          <input
-            type="checkbox"
-            id="persist"
-            onChange={togglePersist}
-            checked={persist}
-          />
-          <label htmlFor="persist">Trust This Device</label>
-        </div>
-      </form>
-      <p>
-        Need an Account?
-        <br />
-        <span className="line">
-          <Link to="/register">Sign Up</Link>
-        </span>
-      </p>
-      <span className="line">
-        <Link to="/forgotpass">forgot password</Link>
-      </span>
-    </section>
+        <Link
+          to="/forgotpass"
+          className="underline mt-3 block text-orange-700 pl-5 "
+        >
+          forgot password
+        </Link>
+      </section>
+    </div>
   );
 };
 
