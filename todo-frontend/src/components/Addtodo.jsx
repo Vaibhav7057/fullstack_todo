@@ -40,8 +40,8 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
   }
 
   return (
-    <div className="bg-white min-w-[250px] w-[30%] controldiv rounded-md p-7 h-96 mt-16 ">
-      <form onSubmit={handleSubmit} className="flex flex-col ">
+    <div className="controldiv max-h-72 text-md pb-5 border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-6  mt-16 ">
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
           name="title"
@@ -50,7 +50,7 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
             setTodo((pre) => ({ ...pre, title: e.target.value }))
           }
           placeholder="title for your todo"
-          className="w-full py-1 px-2 outline-none bg-red-100 rounded-md "
+          className="bg-red-100 rounded-md px-2 mb-4 border border-1 border-slate-400 outline-none w-full placeholder:italic placeholder:text-slate-400 placeholder:text-sm"
           required
         />{" "}
         <br />
@@ -61,14 +61,17 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
           onChange={(e) =>
             setTodo((pre) => ({ ...pre, description: e.target.value }))
           }
-          className="w-full py-1 px-2 outline-none bg-red-100 rounded-md "
+          className=" bg-red-100 rounded-md px-2 mb-4 border border-1 border-slate-400 outline-none w-full placeholder:italic placeholder:text-slate-400 placeholder:text-sm "
         />
         <br />
-        <label htmlFor="deadline">Deadline</label>
+        <label htmlFor="deadline" className="font-bold text-sm ">
+          Deadline
+        </label>
         <br />
         <input
           type="datetime-local"
           id="deadline"
+          className="font-bold text-sm "
           value={todo.deadline || ""}
           onChange={(e) =>
             setTodo((pre) => ({
@@ -77,7 +80,7 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
             }))
           }
         />
-        <div className="flex gap-5 justify-end mt-5">
+        <div className="flex gap-5 justify-end ">
           <input
             type="button"
             name="cancelbtn"
@@ -86,13 +89,13 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
               setShow(false);
               setTodoId("");
             }}
-            className="px-3 py-1 hover:cursor-pointer  bg-red-700 rounded-md text-white font-medium text-md"
+            className="bg-red-700 rounded-md text-center w-full text-white text-sm font-medium my-4 py-2 "
           />
           <input
             type="submit"
             name="submitbtn"
             value={`${todoId ? "Update Todo" : "Create Todo"}`}
-            className="px-3 py-1 hover:cursor-pointer  bg-green-700 rounded-md text-white font-medium text-md"
+            className="bg-green-600 rounded-md text-center w-full text-white text-sm font-medium my-4 py-2 "
           />
         </div>
       </form>

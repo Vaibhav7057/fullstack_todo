@@ -34,6 +34,7 @@ const Register = () => {
       setErrMsg("Invalid Entry");
       return;
     }
+    console.log(user);
     axios
       .post("/api/user/register", user, {
         headers: { "Content-Type": "application/json" },
