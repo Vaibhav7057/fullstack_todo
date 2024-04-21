@@ -30,10 +30,10 @@ const Register = () => {
       })
       .catch((error) => {
         const err = error.response.data;
-        if (!error.response) {
+        if (!error.response.data) {
           setErrMsg("No Server Response");
         } else {
-          setErrMsg(err);
+          setErrMsg(err.message);
         }
         errRef.current.focus();
       });
@@ -49,13 +49,13 @@ const Register = () => {
 
   return (
     <div className="flex justify-center items-center flex-col ">
-      <h3 className="font-bold text-2xl sm:text-[2.5vmax] my-7">
+      <h3 className="font-bold text-violet-300 text-2xl sm:text-[2.5vmax] my-7">
         Todo List App
       </h3>
+      <p className={` text-yellow-300  ${errMsg ? "block" : "hidden"}`}>
+        {errMsg}
+      </p>
       <section className="controldiv text-md pb-5 border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-2 ">
-        <p ref={errRef} className={errMsg ? "block" : "hidden"}>
-          {errMsg}
-        </p>
         <h1 className="font-bold text-xl  text-indigo-950 my-4 ">
           Become a Member
         </h1>

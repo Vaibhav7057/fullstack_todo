@@ -3,11 +3,13 @@ import { useNavigate, Link } from "react-router-dom";
 import { AiFillEye } from "react-icons/ai";
 import { AiFillEyeInvisible } from "react-icons/ai";
 import axios from "axios";
+import { useEffect } from "react";
 
 const Forgotpass = () => {
   const [data, setData] = useState({});
   const [errMsg, setErrMsg] = useState("");
   const [showPass, setShowPass] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [showConPass, setShowConPass] = useState(false);
   const navigate = useNavigate();
   const [otpSent, setOtpSent] = useState(false);
@@ -19,14 +21,16 @@ const Forgotpass = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
+    setErrMsg("");
     axios
       .post(`/api/user/password/${otpSent ? "reset" : "forgot"}`, data, {
         headers: { "Content-Type": "application/json" },
       })
       .then((res) => {
-        console.log(res.data);
         setData({});
         setOtpSent(true);
+        setLoading(false);
         if (otpSent) {
           navigate("/signin");
         }
@@ -34,26 +38,36 @@ const Forgotpass = () => {
       .catch((error) => {
         const err = error.response.data;
         if (!error.response.data) {
-          console.log("server is not responding");
           setErrMsg("server is not responding");
         } else {
           setErrMsg(err.message);
-          console.log(err);
         }
-      });
+      })
+      .finally(() => setLoading(false));
   };
+
+  useEffect(() => {
+    setErrMsg("");
+  }, [data]);
 
   return (
     <div className="flex justify-center items-center flex-col">
-      <h3 className="font-bold text-2xl sm:text-[2.5vmax] my-7">
+      <h3 className="font-bold text-violet-300 text-2xl sm:text-[2.5vmax] my-7">
         Todo List App
       </h3>
+      <p className={` text-yellow-300  ${errMsg ? "block" : "hidden"}`}>
+        {errMsg}
+      </p>
+      {loading ? (
+        <p className="text-center text-slate-300">...processing your request</p>
+      ) : (
+        ""
+      )}
       <section className=" controldiv border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-2 ">
         <h1 className="font-bold text-md text-indigo-950 my-4 ">
           Forgot password
         </h1>
         <form onSubmit={handleSubmit}>
-          <p className={errMsg ? "block" : "hidden"}>{errMsg}</p>
           <p className={`text-sm mb-3 ${otpSent ? "block" : "hidden"}`}>
             OTP is valid only for 5 minutes
           </p>

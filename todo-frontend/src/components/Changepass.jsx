@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import PrivatePath from "../auth/PrivatePath";
 import { AiFillEye } from "react-icons/ai";
 import { AiFillEyeInvisible } from "react-icons/ai";
-
+import { useEffect } from "react";
 const Changepass = () => {
   const [password, setPassword] = useState({});
   const [showPass, setShowPass] = useState(false);
@@ -32,22 +32,26 @@ const Changepass = () => {
       .catch((error) => {
         const err = error.response.data;
         if (!error.response.data) {
-          console.log("server is not responding");
           setErrMsg("server is not responding");
         } else {
           setErrMsg(err.message);
-          console.log(err);
         }
       });
   };
 
+  useEffect(() => {
+    setErrMsg("");
+  }, [password]);
+
   return (
     <div className="flex justify-center items-center flex-col ">
-      <h3 className="font-bold text-2xl sm:text-[2.5vmax] my-7">
+      <h3 className="font-bold text-violet-300 text-2xl sm:text-[2.5vmax] my-7">
         Todo List App
       </h3>
-      <section className="border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-2  ">
-        <p className={`   ${errMsg ? "block" : "hidden"}`}>{errMsg}</p>
+      <p className={` text-yellow-300  ${errMsg ? "block" : "hidden"}`}>
+        {errMsg}
+      </p>
+      <section className=" border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-2  ">
         <h1 className="font-bold text-md text-indigo-950 my-4 ">
           Change your account password
         </h1>
@@ -121,7 +125,7 @@ const Changepass = () => {
         </form>
         <Link
           onClick={() => navigate(-1)}
-          className="underline mt-3 block text-blue-700 "
+          className="underline mt-3 block text-blue-700 mb-4 pl-5 "
         >
           back
         </Link>

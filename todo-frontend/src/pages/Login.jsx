@@ -10,6 +10,7 @@ const Login = () => {
   const [persist, setPersist] = useState(false);
   const [user, setUser] = useState({});
   const [showPass, setShowPass] = useState(false);
+  const [errMsg, setErrMsg] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,10 +38,10 @@ const Login = () => {
       })
       .catch((error) => {
         const err = error.response.data;
-        if (!error.response) {
+        if (!error.response.data) {
           setErrMsg("No Server Response");
         } else {
-          console.log(err);
+          setErrMsg(err.message);
         }
       });
   };
@@ -57,12 +58,19 @@ const Login = () => {
     emailRef.current.focus();
   }, []);
 
+  useEffect(() => {
+    setErrMsg("");
+  }, [user]);
+
   return (
     <div className="flex justify-center items-center flex-col ">
-      <h3 className="font-bold text-2xl sm:text-[2.5vmax] my-7">
+      <h3 className="font-bold text-violet-300 text-2xl sm:text-[2.5vmax] my-7">
         Todo List App
       </h3>
-      <section className="text-md pb-5 border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-2 ">
+      <p className={`text-yellow-300   ${errMsg ? "block" : "hidden"}`}>
+        {errMsg}
+      </p>
+      <section className="controldiv text-md pb-5 border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-2 ">
         <h1 className="font-bold text-xl pl-7 text-indigo-950 my-4 ">
           Sign In
         </h1>

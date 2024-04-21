@@ -13,7 +13,7 @@ const Profile = () => {
   const public_id = userDetails?.profilephoto?.public_id;
   const navigate = useNavigate();
   return (
-    <div className={`w-[250px] ${img ? "" : "relative"} `}>
+    <div>
       {img && (
         <div className="absolute inset-0 bg-[#24212157] w-[100vw] h-[100vh] flex justify-center items-center backdrop-blur-sm min-w-full z-10">
           <Updatephoto
@@ -23,66 +23,69 @@ const Profile = () => {
           />
         </div>
       )}
-      <div
-        className="w-[50px] h-[50px] rounded-full overflow-hidden text-black hover:cursor-pointer"
-        onClick={(e) => setShowmenu((prev) => !prev)}
-      >
-        <img
-          src={userDetails?.profilephoto?.url ?? "/images/user.png"}
-          alt="user photo"
-          className="w-full h-full"
-        />
+      <div className="relative ">
+        <div
+          className="w-[50px] h-[50px] rounded-full overflow-hidden text-black hover:cursor-pointer"
+          onClick={(e) => setShowmenu((prev) => !prev)}
+        >
+          <img
+            src={userDetails?.profilephoto?.url ?? "/images/user.png"}
+            alt="user photo"
+            className="w-full h-full"
+          />
+        </div>
+
+        <ul
+          className={`min-w-[110px] absolute top-14 left-10 sm:left-0 p-2 text-sm font-medium space-y-1 bg-slate-300 shadow-2xl ${
+            showmenu ? "block" : "hidden"
+          } `}
+        >
+          <li
+            className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 "
+            onClick={() => {
+              setOperation("update");
+              setShowmenu(false);
+              setImg(true);
+            }}
+          >
+            Update Photo
+          </li>
+          <li
+            className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 "
+            onClick={() => {
+              setOperation("delete");
+              setShowmenu(false);
+              setImg(true);
+            }}
+          >
+            Remove Photo
+          </li>
+          <li
+            className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 "
+            onClick={() => navigate("/changepass")}
+          >
+            Change Password
+          </li>
+          <li
+            className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 "
+            onClick={() => navigate("/updateinfo")}
+          >
+            Update Info
+          </li>
+          <li
+            className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 "
+            onClick={() => navigate("/deleteaccount")}
+          >
+            Delete Account
+          </li>
+          <li
+            className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 "
+            onClick={logout}
+          >
+            Logout
+          </li>
+        </ul>
       </div>
-      <ul
-        className={` absolute top-8 left-0 p-2 text-sm font-medium space-y-1 bg-slate-300 shadow-2xl ${
-          showmenu ? "block" : "hidden"
-        }  `}
-      >
-        <li
-          className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 "
-          onClick={() => {
-            setOperation("update");
-            setShowmenu(false);
-            setImg(true);
-          }}
-        >
-          Update Photo
-        </li>
-        <li
-          className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 "
-          onClick={() => {
-            setOperation("delete");
-            setShowmenu(false);
-            setImg(true);
-          }}
-        >
-          Remove Photo
-        </li>
-        <li
-          className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 "
-          onClick={() => navigate("/changepass")}
-        >
-          Change Password
-        </li>
-        <li
-          className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 "
-          onClick={() => navigate("/updateinfo")}
-        >
-          Update Info
-        </li>
-        <li
-          className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 "
-          onClick={() => navigate("/deleteaccount")}
-        >
-          Delete Account
-        </li>
-        <li
-          className="hover:cursor-pointer hover:text-white hover hover:bg-slate-800 "
-          onClick={logout}
-        >
-          Logout
-        </li>
-      </ul>
     </div>
   );
 };

@@ -8,6 +8,7 @@ import Addtodo from "./components/Addtodo";
 import Profile from "./components/Profile";
 import PrivatePath from "./auth/PrivatePath";
 import { setUserDetails } from "./reduxStore/Slices/userSlice";
+import SearchFunction from "./components/SearchFunction";
 
 const Todos = () => {
   const { todos } = useSelector((state) => state.todo);
@@ -20,6 +21,7 @@ const Todos = () => {
   const [show, setShow] = useState(false);
   const [todoId, setTodoId] = useState("");
   const [searchKey, setSearchKey] = useState("");
+  const search = SearchFunction(setSearchKey, 400);
   const [changed, setChanged] = useState(false);
   const today = new Date().toLocaleDateString("en-us", {
     weekday: "long",
@@ -131,23 +133,25 @@ const Todos = () => {
     <>
       <div className=" h-auto bg-[#747C92] py-2 px-2 md:px-5 relative text-black text-lg ">
         <div className="w-full  py-5 bg-[#BBE1C3] px-5 rounded-lg flex flex-col gap-2 ">
-          <div className="flex justify-between px-24">
-            <h3 className="font-bold text-[2.5vmax]">Todo List App</h3>
+          <div className="flex flex-col gap-2 sm:gap-0 sm:flex-row justify-between items-center px-24">
+            <h1 className="font-bold text-2xl sm:text-[2.5vmax]">
+              Todo List App
+            </h1>
             {userDetails && (
-              <div className="font-bold text-[1.5vmax]">
+              <div className="font-bold text-sm sm:text-[1.5vmax]">
                 <h3>Welcome,</h3>
-                <h2>{userDetails?.fullName}</h2>
+                <h3>{userDetails?.fullName}</h3>
               </div>
             )}
-            <div className="flex font-medium text-lg items-center gap-2">
+            <div className="hidden sm:flex font-medium text-lg items-center gap-2">
               <FaRegCalendarAlt /> <span>{today}</span>
             </div>
           </div>
-          <div className="flex gap-10 justify-end items-center text-lg">
-            <div className="flex items-center rounded-lg py-0.5 px-2 bg-white  min-w-[250px] w-[100%] ">
+          <div className="flex flex-col sm:flex-row gap-2 justify-center sm:justify-between items-center text-lg">
+            <div className="flex items-center rounded-lg py-0.5 px-2 bg-white  min-w-[300px] sm:w-[100%] ">
               <input
                 onInput={(e) => {
-                  setSearchKey(e.target.value);
+                  search(e.target.value);
                 }}
                 type="text"
                 className="w-full rounded-lg outline-none py-1 "
@@ -159,14 +163,15 @@ const Todos = () => {
                 <IoSearch />
               </div>
             </div>
-            <div
-              onClick={() => setShow(true)}
-              className="bg-[#D7BCE8] py-2 px-3 rounded-lg whitespace-nowrap hover:cursor-pointer "
-            >
-              Add New Todo
+            <div className="flex items-center justify-between gap-8 md:gap-24 sm:ml-28 md:ml-32 sm:mr-20 ">
+              <div
+                onClick={() => setShow(true)}
+                className="bg-[#D7BCE8] py-2 px-3 rounded-lg whitespace-nowrap  hover:cursor-pointer "
+              >
+                Add New Todo
+              </div>
+              <Profile />
             </div>
-
-            <Profile />
           </div>
         </div>
         {isLoading ? (
@@ -181,12 +186,18 @@ const Todos = () => {
             {todos?.length > 0 && (
               <table className="w-full">
                 <thead>
-                  <tr className="grid grid-cols-12 border-b-2 border-slate-600 pb-2 text-lg ">
+                  <tr className="grid grid-cols-6 md:grid-cols-8 lg:grid-cols-12  border-b-2 border-slate-600 pb-2 text-base sm:text-lg ">
                     <th className=" col-span-0.5  ">Sr.no.</th>
                     <th className=" col-span-2  ">Title</th>
-                    <th className=" col-span-3   ">Description</th>
-                    <th className=" col-span-1.5   ">Created At</th>
-                    <th className=" col-span-2   ">Deadline</th>
+                    <th className=" lg:col-span-3 hidden lg:block  ">
+                      Description
+                    </th>
+                    <th className=" lg:col-span-1.5  hidden lg:block ">
+                      Created At
+                    </th>
+                    <th className=" md:col-span-2 hidden md:block  ">
+                      Deadline
+                    </th>
                     <th className=" col-span-1  ">Status</th>
                     <th className=" col-span-2   ">Actions</th>
                   </tr>
@@ -195,20 +206,20 @@ const Todos = () => {
                   {todos?.map((todo, i) => (
                     <tr
                       key={todo._id}
-                      className={`grid grid-cols-12 border-b-2 border-slate-600 py-1 ${
+                      className={`grid grid-cols-6 md:grid-cols-8 lg:grid-cols-12 border-b-2 text-sm sm:text-lg border-slate-600 py-1 ${
                         todo.completed ? "line-through" : ""
                       }`}
                     >
                       <td className=" col-span-.5 place-self-center px-1 ">
                         {i + 1}
                       </td>
-                      <td className=" col-span-2 place-self-center px-1 ">
+                      <td className=" col-span-2 my-auto px-1 ">
                         {todo.title}
                       </td>
-                      <td className=" col-span-3 place-self-center px-1  ">
+                      <td className=" lg:col-span-3 hidden lg:block my-auto px-1  ">
                         {todo.description}
                       </td>
-                      <td className=" col-span-1.5 place-self-center px-1 ">
+                      <td className=" lg:col-span-1.5  hidden lg:block place-self-center px-1 ">
                         {new Date(todo.createdAt).toLocaleDateString(
                           undefined,
                           {
@@ -227,7 +238,7 @@ const Todos = () => {
                           }
                         )}
                       </td>
-                      <td className=" col-span-2 place-self-center px-1 mx-1 ">
+                      <td className=" md:col-span-2 hidden md:block place-self-center px-1 mx-1 ">
                         {todo.deadline &&
                           new Date(todo.deadline).toLocaleDateString(
                             undefined,
@@ -252,6 +263,7 @@ const Todos = () => {
                         <input
                           type="checkbox"
                           defaultChecked={todo.completed}
+                          className="w-3 h-3 sm:w-4 sm:h-4 mr-1 "
                           name="status"
                           id={i + 1}
                           onClick={(e) => {
@@ -259,7 +271,7 @@ const Todos = () => {
                           }}
                         />
                         <label htmlFor={i + 1}>
-                          {todo.completed ? "Completed" : "Pending"}
+                          {todo.completed ? "Done" : "Pending"}
                         </label>
                       </td>
                       <td className=" col-span-2 place-self-center text-center px-1">
@@ -271,7 +283,7 @@ const Todos = () => {
                           }}
                           className={`px-2 mt-0 py-1 ${
                             todo.completed ? "bg-[#38419D]" : "bg-green-700"
-                          } place-self-center rounded-md text-white font-thin text-[13px]`}
+                          } place-self-center rounded-md text-white font-thin text-sm sm:text-[13px]`}
                         >
                           Edit
                         </button>
@@ -279,7 +291,7 @@ const Todos = () => {
                           onClick={(e) => {
                             deleteTodo(todo._id);
                           }}
-                          className="px-2 mt-0 py-1  bg-red-700 place-self-center rounded-md text-white font-thin text-[13px] ml-1 "
+                          className="px-2 mt-0 py-1  bg-red-700 place-self-center rounded-md text-white font-thin text-sm sm:text-[13px] ml-1 "
                         >
                           Delete
                         </button>

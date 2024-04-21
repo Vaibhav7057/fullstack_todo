@@ -12,14 +12,14 @@ html,
 body {
   min-height: 100vh;
   min-width: 100vw;
-  background-color: rgb(208, 231, 245);
+  background-color: #011015;
   font-size: 13px;
   line-height: 19px;
   font-family: "Nunito", sans-serif;
 }
 
 .controldiv {
-  max-width: 288px;
+  max-width: 250px;
 }
 
 .ring {
