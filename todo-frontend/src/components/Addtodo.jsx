@@ -40,7 +40,7 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
   }
 
   return (
-    <div className="controldiv max-h-72 text-md pb-5 border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-6  mt-16 ">
+    <div className="controldiv max-h-80 text-md pb-5 border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-6  mt-16 ">
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -71,7 +71,7 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
         <input
           type="datetime-local"
           id="deadline"
-          className="font-bold text-sm "
+          className="font-bold text-sm hover:cursor-pointer"
           value={todo.deadline || ""}
           onChange={(e) =>
             setTodo((pre) => ({
@@ -89,13 +89,13 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
               setShow(false);
               setTodoId("");
             }}
-            className="bg-red-700 rounded-md text-center w-full text-white text-sm font-medium my-4 py-2 "
+            className="bg-red-700 rounded-md text-center w-full text-white text-sm font-medium my-4 py-2 hover:cursor-pointer "
           />
           <input
             type="submit"
             name="submitbtn"
             value={`${todoId ? "Update Todo" : "Create Todo"}`}
-            className="bg-green-600 rounded-md text-center w-full text-white text-sm font-medium my-4 py-2 "
+            className="bg-green-600 rounded-md text-center w-full text-white text-sm font-medium my-4 py-2 hover:cursor-pointer "
           />
         </div>
       </form>
