@@ -40,7 +40,7 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
   }
 
   return (
-    <div className="bg-white min-w-[400px] w-[30%] controldiv rounded-md p-7 h-96 mt-16 ">
+    <div className="bg-white min-w-[250px] w-[30%] controldiv rounded-md p-7 h-96 mt-16 ">
       <form onSubmit={handleSubmit} className="flex flex-col ">
         <input
           type="text"
