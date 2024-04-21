@@ -3,9 +3,18 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AiFillEye } from "react-icons/ai";
 import { AiFillEyeInvisible } from "react-icons/ai";
+import { BsFillInfoCircleFill } from "react-icons/bs";
+import { AiOutlineCheck } from "react-icons/ai";
+import { FaTimesCircle } from "react-icons/fa";
+
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+
 const Register = () => {
   const [errMsg, setErrMsg] = useState("");
   const [user, setUser] = useState({});
+  const [validEmail, setValidEmail] = useState(false);
+  const [validPassword, setValidPassword] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const navigate = useNavigate();
 
@@ -19,6 +28,12 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const v1 = EMAIL_REGEX.test(user?.email);
+    const v2 = PWD_REGEX.test(user?.password);
+    if (!v1 || !v2) {
+      setErrMsg("Invalid Entry");
+      return;
+    }
     axios
       .post("/api/user/register", user, {
         headers: { "Content-Type": "application/json" },
@@ -46,6 +61,14 @@ const Register = () => {
   useEffect(() => {
     setErrMsg("");
   }, [user]);
+
+  useEffect(() => {
+    setValidEmail(EMAIL_REGEX.test(user?.email));
+  }, [user?.email]);
+
+  useEffect(() => {
+    setValidPassword(PWD_REGEX.test(user?.password));
+  }, [user?.password]);
 
   return (
     <div className="flex justify-center items-center flex-col ">
@@ -75,20 +98,42 @@ const Register = () => {
             placeholder="enter your fullname"
             required
           />
-          <label htmlFor="email" className="font-bold text-sm ">
+          <label htmlFor="email" className="font-bold text-sm flex gap-3">
             Email:
+            <AiOutlineCheck
+              style={{
+                color: "#13f50f",
+              }}
+              className={validEmail ? "inline-block" : "hidden"}
+            />
+            <FaTimesCircle
+              style={{
+                color: "#f50f0f",
+              }}
+              className={validEmail || !user?.email ? "hidden" : "inline-block"}
+            />
           </label>
-          <input
-            type="email"
-            className="rounded-md px-2 mb-4 border border-1 border-slate-400 outline-none w-full placeholder:italic placeholder:text-slate-400 placeholder:text-sm"
-            id="email"
-            autoComplete="off"
-            name="email"
-            value={user.email || ""}
-            onChange={handleChange}
-            placeholder="enter your email"
-            required
-          />
+          <div className="relative">
+            <input
+              type="email"
+              className="rounded-md px-2 mb-4 border border-1 border-slate-400 outline-none w-full placeholder:italic placeholder:text-slate-400 placeholder:text-sm"
+              id="email"
+              autoComplete="off"
+              name="email"
+              value={user.email?.toLowerCase() || ""}
+              onChange={handleChange}
+              placeholder="enter your email"
+              required
+            />
+            <p
+              className={`absolute left-0 top-7 bg-black text-white text-xs font-extralight rounded-md p-2 ${
+                !validEmail && user?.email ? "block" : "hidden"
+              }`}
+            >
+              <BsFillInfoCircleFill className="inline mr-3" />
+              Please enter a valid email address.
+            </p>
+          </div>
           <label htmlFor="monumber" className="font-bold text-sm ">
             Mobile Number:
           </label>
@@ -104,10 +149,24 @@ const Register = () => {
             required
           />
 
-          <label htmlFor="password" className="font-bold text-sm ">
+          <label htmlFor="password" className="font-bold text-sm flex gap-3">
             Password:
+            <AiOutlineCheck
+              style={{
+                color: "#13f50f",
+              }}
+              className={validPassword ? "inline-block " : "hidden"}
+            />
+            <FaTimesCircle
+              style={{
+                color: "#f50f0f",
+              }}
+              className={
+                validPassword || !user?.password ? "hidden" : "inline-block"
+              }
+            />
           </label>
-          <div className="flex bg-white items-center mb-4 px-2 rounded-md border border-1 border-slate-400  ">
+          <div className="flex relative bg-white items-center mb-4 px-2 rounded-md border border-1 border-slate-400  ">
             <input
               type={showPass ? "text" : "password"}
               className="outline-none w-full placeholder:italic placeholder:text-slate-400 placeholder:text-sm"
@@ -124,6 +183,19 @@ const Register = () => {
             >
               {showPass ? <AiFillEye /> : <AiFillEyeInvisible />}
             </span>
+            <p
+              className={`absolute left-0 top-7 bg-black text-white text-xs font-extralight rounded-md p-2 ${
+                !validPassword && user?.password ? "block" : "hidden"
+              }`}
+            >
+              <BsFillInfoCircleFill className="inline mr-3" />
+              8 to 24 characters.
+              <br />
+              Must include uppercase and lowercase letters, a number and a
+              special character.
+              <br />
+              Allowed special characters : ! @ # $ %
+            </p>
           </div>
           <button className="bg-yellow-400 rounded-md text-center w-full text-black font-medium my-4">
             Create Account

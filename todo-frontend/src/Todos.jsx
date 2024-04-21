@@ -21,7 +21,7 @@ const Todos = () => {
   const [show, setShow] = useState(false);
   const [todoId, setTodoId] = useState("");
   const [searchKey, setSearchKey] = useState("");
-  const search = SearchFunction(setSearchKey, 400);
+  const search = SearchFunction(setSearchKey, 500);
   const [changed, setChanged] = useState(false);
   const today = new Date().toLocaleDateString("en-us", {
     weekday: "long",
