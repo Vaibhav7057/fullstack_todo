@@ -5,11 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/api": {
-        target: "https://todobackend-3gdj.onrender.com",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ""),
-      },
+      "/api": "https://todobackend-3gdj.onrender.com",
     },
   },
 });
