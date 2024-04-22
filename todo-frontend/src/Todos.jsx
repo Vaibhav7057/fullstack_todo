@@ -69,10 +69,14 @@ const Todos = () => {
   }, [changed, currentPage, searchKey]);
 
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
     const getuserdetails = async () => {
       try {
-        const res = await secureAxios.get("/api/user/me");
-        dispatch(setUserDetails(res.data.user));
+        const res = await secureAxios.get("/api/user/me", {
+          signal: controller.signal,
+        });
+        isMounted && dispatch(setUserDetails(res.data.user));
       } catch (err) {
         if (!err.response) {
           console.log("no server response");
@@ -83,6 +87,11 @@ const Todos = () => {
     };
 
     getuserdetails();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
 
   async function deleteTodo(id) {
@@ -124,7 +133,7 @@ const Todos = () => {
   };
 
   const Loader = (
-    <div className="flex justify-center items-center w-full h-full min-h-[69vh] bg-[#0e2a33]">
+    <div className="flex justify-center items-center w-full h-full min-h-[70vh] bg-[#0e2a33]">
       <p className="text-white">...loading</p>
     </div>
   );
@@ -188,7 +197,7 @@ const Todos = () => {
                 <thead>
                   <tr className="grid grid-cols-6 md:grid-cols-8 lg:grid-cols-12  border-b-2 border-slate-600 pb-2 text-base sm:text-lg ">
                     <th className=" col-span-0.5  ">Sr.no.</th>
-                    <th className=" col-span-2  ">Title</th>
+                    <th className=" col-span-2 ">Title</th>
                     <th className=" lg:col-span-3 hidden lg:block  ">
                       Description
                     </th>

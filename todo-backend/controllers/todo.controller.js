@@ -2,8 +2,6 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { Todo } from "../models/todo.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { User } from "../models/user.model.js";
-import mongoose from "mongoose";
 
 const addtodo = asyncHandler(async (req, res) => {
   const { title, description, deadline } = req.body;

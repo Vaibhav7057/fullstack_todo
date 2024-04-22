@@ -34,7 +34,6 @@ const Register = () => {
       setErrMsg("Invalid Entry");
       return;
     }
-    console.log(user);
     axios
       .post("/api/user/register", user, {
         headers: { "Content-Type": "application/json" },
@@ -198,7 +197,12 @@ const Register = () => {
               Allowed special characters : ! @ # $ %
             </p>
           </div>
-          <button className="bg-yellow-400 rounded-md text-center w-full text-black font-medium my-4">
+          <button
+            disabled={!validEmail || !validPassword ? true : false}
+            className={` rounded-md text-center w-full text-black font-medium my-4 ${
+              !validEmail || !validPassword ? "bg-slate-300" : "bg-yellow-400"
+            }`}
+          >
             Create Account
           </button>
         </form>
