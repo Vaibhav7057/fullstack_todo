@@ -3,8 +3,13 @@ import { useNavigate } from "react-router-dom";
 import PrivatePath from "../auth/PrivatePath";
 import { useSelector, useDispatch } from "react-redux";
 import { setUserDetails } from "../reduxStore/Slices/userSlice";
+import { BsFillInfoCircleFill } from "react-icons/bs";
+
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
 const Updateinfo = () => {
   const [user, setUser] = useState({});
+  const [validEmail, setValidEmail] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -21,6 +26,11 @@ const Updateinfo = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const v1 = EMAIL_REGEX.test(user?.email);
+    if (!v1) {
+      setErrMsg("Invalid Entry");
+      return;
+    }
     secureAxios
       .patch("/api/user/me/update", user, {
         headers: { "Content-Type": "application/json" },
@@ -40,6 +50,10 @@ const Updateinfo = () => {
         }
       });
   };
+
+  useEffect(() => {
+    setValidEmail(EMAIL_REGEX.test(user?.email));
+  }, [user?.email]);
 
   useEffect(() => {
     setErrMsg("");
@@ -75,17 +89,27 @@ const Updateinfo = () => {
           <label htmlFor="email" className="font-bold text-sm ">
             Email:
           </label>
-          <input
-            type="email"
-            className="rounded-md px-2 mb-4 border border-1 border-slate-400 outline-none w-full placeholder:italic placeholder:text-slate-400 placeholder:text-sm"
-            id="email"
-            autoComplete="off"
-            name="email"
-            value={user.email || ""}
-            onChange={handleChange}
-            placeholder="enter your email"
-            required
-          />
+          <div className="relative">
+            <input
+              type="email"
+              className="rounded-md px-2 mb-4 border border-1 border-slate-400 outline-none w-full placeholder:italic placeholder:text-slate-400 placeholder:text-sm"
+              id="email"
+              autoComplete="off"
+              name="email"
+              value={user.email || ""}
+              onChange={handleChange}
+              placeholder="enter your email"
+              required
+            />
+            <p
+              className={`absolute left-0 top-7 bg-black text-white text-xs font-extralight rounded-md p-2 ${
+                !validEmail && user?.email ? "block" : "hidden"
+              }`}
+            >
+              <BsFillInfoCircleFill className="inline mr-3" />
+              Please enter a valid email address.
+            </p>
+          </div>
           <label htmlFor="monumber" className="font-bold text-sm ">
             Mobile Number:
           </label>

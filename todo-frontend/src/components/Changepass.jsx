@@ -3,9 +3,15 @@ import { useNavigate, Link } from "react-router-dom";
 import PrivatePath from "../auth/PrivatePath";
 import { AiFillEye } from "react-icons/ai";
 import { AiFillEyeInvisible } from "react-icons/ai";
+import { BsFillInfoCircleFill } from "react-icons/bs";
 import { useEffect } from "react";
+
+const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+
 const Changepass = () => {
   const [password, setPassword] = useState({});
+  const [validPassword, setValidPassword] = useState(false);
+  const [validMatch, setValidMatch] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [showOldPass, setShowOldPass] = useState(false);
   const [showConPass, setShowConPass] = useState(false);
@@ -20,6 +26,12 @@ const Changepass = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const v1 = PWD_REGEX.test(password?.newPassword);
+    const v2 = password?.newPassword === password?.confirmPassword;
+    if (!v1 || !v2) {
+      setErrMsg("Invalid Entry");
+      return;
+    }
     secureAxios
       .patch("/api/user/password/update", password, {
         headers: { "Content-Type": "application/json" },
@@ -38,6 +50,11 @@ const Changepass = () => {
         }
       });
   };
+
+  useEffect(() => {
+    setValidPassword(PWD_REGEX.test(password?.newPassword));
+    setValidMatch(password?.newPassword === password?.confirmPassword);
+  }, [password?.newPassword, password?.confirmPassword]);
 
   useEffect(() => {
     setErrMsg("");
@@ -80,7 +97,7 @@ const Changepass = () => {
           <label htmlFor="newPassword" className="font-bold text-sm">
             New Password:
           </label>
-          <div className="flex bg-white items-center mb-4 px-2 rounded-md border border-1 border-slate-400  ">
+          <div className="flex relative bg-white items-center mb-4 px-2 rounded-md border border-1 border-slate-400  ">
             <input
               type={showPass ? "text" : "password"}
               className="outline-none w-full placeholder:italic placeholder:text-slate-400 placeholder:text-sm"
@@ -91,6 +108,19 @@ const Changepass = () => {
               placeholder="New Password"
               required
             />
+            <p
+              className={`absolute z-10 left-0 top-7 bg-black text-white text-xs font-extralight rounded-md p-2 ${
+                !validPassword && password?.newPassword ? "block" : "hidden"
+              }`}
+            >
+              <BsFillInfoCircleFill className="inline mr-3" />
+              8 to 24 characters.
+              <br />
+              Must include uppercase and lowercase letters, a number and a
+              special character.
+              <br />
+              Allowed special characters : ! @ # $ %
+            </p>
             <span
               onClick={() => setShowPass((pre) => !pre)}
               className="hover:cursor-pointer"
@@ -101,7 +131,7 @@ const Changepass = () => {
           <label htmlFor="confirmPassword" className="font-bold text-sm ">
             Confirm Password:
           </label>
-          <div className="flex bg-white items-center px-2 rounded-md border border-1 border-slate-400 ">
+          <div className="flex relative bg-white items-center px-2 rounded-md border border-1 border-slate-400 ">
             <input
               type={showConPass ? "text" : "password"}
               className="outline-none w-full placeholder:italic placeholder:text-slate-400 placeholder:text-sm"
@@ -112,6 +142,14 @@ const Changepass = () => {
               placeholder="Confirm Password"
               required
             />
+            <p
+              className={`absolute left-0 top-7 bg-black text-white text-xs font-extralight rounded-md p-2 ${
+                !validMatch && password?.confirmPassword ? "block" : "hidden"
+              }`}
+            >
+              <BsFillInfoCircleFill className="inline mr-3" />
+              Must match the first password input field.
+            </p>
             <span
               onClick={() => setShowConPass((pre) => !pre)}
               className="hover:cursor-pointer"
