@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { AiFillEye } from "react-icons/ai";
 import { AiFillEyeInvisible } from "react-icons/ai";
-import axios from "../auth/baseaxios";
+import axios from "axios";
 import { useEffect } from "react";
 
 const Forgotpass = () => {

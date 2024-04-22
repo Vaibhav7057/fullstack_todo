@@ -3,9 +3,7 @@ import { useSelector } from "react-redux";
 import useRefresh from "./useRefresh";
 import { useEffect } from "react";
 
-const BASE_URL = "https://todobackend-3gdj.onrender.com";
 const axiosPrivate = axios.create({
-  baseURL: BASE_URL,
   withCredentials: true,
 });
 

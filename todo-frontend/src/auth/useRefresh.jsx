@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "./baseaxios";
+import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setAccessToken } from "../reduxStore/Slices/userSlice";
 
