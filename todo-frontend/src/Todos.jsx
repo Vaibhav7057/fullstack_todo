@@ -272,14 +272,14 @@ const Todos = () => {
                         <input
                           type="checkbox"
                           defaultChecked={todo.completed}
-                          className="w-3 h-3 sm:w-4 sm:h-4 mr-1 "
+                          className="w-3 h-3 sm:w-4 sm:h-4 mr-1 hover:cursor-pointer "
                           name="status"
                           id={i + 1}
                           onClick={(e) => {
                             editStatus(todo._id, !todo.completed);
                           }}
                         />
-                        <label htmlFor={i + 1}>
+                        <label htmlFor={i + 1} className="hover:cursor-pointer">
                           {todo.completed ? "Done" : "Pending"}
                         </label>
                       </td>

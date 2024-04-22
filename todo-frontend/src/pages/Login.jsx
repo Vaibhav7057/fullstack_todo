@@ -118,11 +118,14 @@ const Login = () => {
           <div className="pl-4 flex items-center gap-2">
             <input
               type="checkbox"
+              className="hover:cursor-pointer"
               id="persist"
               onChange={togglePersist}
               checked={persist}
             />
-            <label htmlFor="persist">Trust This Device</label>
+            <label htmlFor="persist" className="hover:cursor-pointer">
+              Trust This Device
+            </label>
           </div>
         </form>
         <div className="mt-3 flex justify-around">
