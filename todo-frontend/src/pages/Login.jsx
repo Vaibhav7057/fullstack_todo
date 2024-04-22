@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { setAccessToken } from "../reduxStore/Slices/userSlice";
 import { AiFillEye } from "react-icons/ai";
 import { AiFillEyeInvisible } from "react-icons/ai";
-import axios from "axios";
+import axios from "../auth/baseaxios";
 
 const Login = () => {
   const [persist, setPersist] = useState(false);
