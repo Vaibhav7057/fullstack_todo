@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/api": "https://todobackend-3gdj.onrender.com",
+      "/api": "http://127.0.0.1:8000",
     },
   },
 });

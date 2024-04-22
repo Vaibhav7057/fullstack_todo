@@ -28,7 +28,6 @@ const Login = () => {
     axios
       .post("/api/user/login", user, {
         headers: { "Content-Type": "application/json" },
-        withCredentials: true,
       })
       .then((res) => {
         const accessToken = res?.data?.token;

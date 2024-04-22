@@ -37,7 +37,6 @@ const Register = () => {
     axios
       .post("/api/user/register", user, {
         headers: { "Content-Type": "application/json" },
-        withCredentials: true,
       })
       .then((res) => {
         setUser({});
