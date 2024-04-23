@@ -5,6 +5,7 @@ import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
 import PersistLogin from "./auth/PersistLogin.jsx";
 import ProtectedRoute from "./auth/ProtectedRoute.jsx";
+import Unprotected from "./auth/Unprotected.jsx";
 import PagenotFound from "./pages/PagenotFound.jsx";
 import Updatephoto from "./components/Updatephoto.jsx";
 import DeleteAccount from "./pages/DeleteAccount.jsx";
@@ -14,10 +15,13 @@ import Forgotpass from "./components/Forgotpass.jsx";
 function App() {
   return (
     <Routes>
-      <Route path="/register" element={<Register />} />
-      <Route path="/signin" element={<Login />} />
-      <Route path="/forgotpass" element={<Forgotpass />} />
       <Route element={<PersistLogin />}>
+        <Route element={<Unprotected />}>
+          <Route path="/register" element={<Register />} />
+          <Route path="/signin" element={<Login />} />
+          <Route path="/forgotpass" element={<Forgotpass />} />
+        </Route>
+
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Todos />} />
         </Route>

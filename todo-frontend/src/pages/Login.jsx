@@ -93,10 +93,10 @@ const Login = () => {
           <label htmlFor="password" className="font-bold text-sm ">
             Password:
           </label>
-          <div className="flex bg-white items-center mb-4 px-2 rounded-md border border-1 border-slate-400  ">
+          <div className="flex overflow-hidden bg-white items-center mb-4 pr-2 rounded-md border border-1 border-slate-400  ">
             <input
               type={showPass ? "text" : "password"}
-              className="outline-none w-full placeholder:italic placeholder:text-slate-400 placeholder:text-sm "
+              className="outline-none pl-2 w-full placeholder:italic placeholder:text-slate-400 placeholder:text-sm "
               id="password"
               name="password"
               value={user.password?.toString() || ""}

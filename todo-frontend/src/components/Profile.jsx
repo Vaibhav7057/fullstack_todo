@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import useLogout from "../auth/useLogout";
 import Updatephoto from "./Updatephoto";
@@ -12,6 +12,22 @@ const Profile = () => {
   const { userDetails } = useSelector((state) => state.user);
   const public_id = userDetails?.profilephoto?.public_id;
   const navigate = useNavigate();
+  const menuref = useRef();
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (!menuref.current.contains(e.target)) {
+        setShowmenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handler);
+
+    return () => {
+      document.removeEventListener("mousedown", handler);
+    };
+  });
+
   return (
     <div>
       {img && (
@@ -36,6 +52,7 @@ const Profile = () => {
         </div>
 
         <ul
+          ref={menuref}
           className={`min-w-[110px] absolute top-14 left-10 sm:left-0 p-2 text-sm font-medium space-y-1 bg-slate-300 shadow-2xl ${
             showmenu ? "block" : "hidden"
           } `}

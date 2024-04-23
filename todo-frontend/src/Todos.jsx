@@ -148,7 +148,7 @@ const Todos = () => {
             </h1>
             {userDetails && (
               <div className="font-bold text-sm sm:text-[1.5vmax]">
-                <h3>Welcome,</h3>
+                <h3 className="sm:mb-3">Welcome,</h3>
                 <h3>{userDetails?.fullName}</h3>
               </div>
             )}
@@ -162,8 +162,9 @@ const Todos = () => {
                 onInput={(e) => {
                   search(e.target.value);
                 }}
+                placeholder="search your todos"
                 type="text"
-                className="w-full rounded-lg outline-none py-1 "
+                className="w-full rounded-lg outline-none px-2 py-1 placeholder:italic placeholder:text-slate-400 placeholder:text-md"
               />
               <div
                 className="text-xl hover:cursor-pointer font-bold border-l border-black pl-1 "
@@ -172,10 +173,10 @@ const Todos = () => {
                 <IoSearch />
               </div>
             </div>
-            <div className="flex items-center justify-between gap-8 md:gap-24 sm:ml-28 md:ml-32 sm:mr-20 ">
+            <div className="flex items-center justify-between gap-8 md:gap-24 sm:ml-28 md:ml-32 sm:mr-20 mt-3 ">
               <div
                 onClick={() => setShow(true)}
-                className="bg-[#D7BCE8] py-2 px-3 rounded-lg whitespace-nowrap  hover:cursor-pointer "
+                className="bg-[#D7BCE8] py-2 px-3 rounded-lg whitespace-nowrap  hover:cursor-pointer mr-10 "
               >
                 Add New Todo
               </div>
