@@ -23,7 +23,7 @@ const Todos = () => {
   const [searchKey, setSearchKey] = useState("");
   const search = SearchFunction(setSearchKey, 500);
   const [changed, setChanged] = useState(false);
-  const today = new Date().toLocaleDateString("en-IN", {
+  const today = new Date().toLocaleDateString(undefined, {
     weekday: "long",
     // year: "numeric",
     month: "short",
@@ -229,13 +229,13 @@ const Todos = () => {
                         {todo.description}
                       </td>
                       <td className=" lg:col-span-1.5  hidden lg:block place-self-center px-1 ">
-                        {new Date(todo.createdAt).toLocaleDateString("en-IN", {
+                        {new Date(todo.createdAt).toLocaleString(undefined, {
                           year: "numeric",
                           month: "numeric",
                           day: "numeric",
                         })}{" "}
                         <br />
-                        {new Date(todo.createdAt).toLocaleTimeString("en-IN", {
+                        {new Date(todo.createdAt).toLocaleString(undefined, {
                           hour: "numeric",
                           minute: "numeric",
                           hour12: true,
@@ -243,14 +243,14 @@ const Todos = () => {
                       </td>
                       <td className=" md:col-span-2 hidden md:block place-self-center px-1 mx-1 ">
                         {todo.deadline &&
-                          new Date(todo.deadline).toLocaleDateString("en-IN", {
+                          new Date(todo.deadline).toLocaleString(undefined, {
                             year: "numeric",
                             month: "numeric",
                             day: "numeric",
                           })}{" "}
                         <br />
                         {todo.deadline &&
-                          new Date(todo.deadline).toLocaleTimeString("en-IN", {
+                          new Date(todo.deadline).toLocaleString(undefined, {
                             hour: "numeric",
                             minute: "numeric",
                             hour12: true,
