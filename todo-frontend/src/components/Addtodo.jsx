@@ -19,15 +19,15 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    console.log(todo?.deadline);
     try {
       const res = await secureAxios({
         method: todoId ? "PUT" : "POST",
         url: `/api/todos/${todoId ? "edittodo/" + todoId : "createtodo"}`,
         data: todo,
       });
-      console.log(res.data);
     } catch (err) {
-      if (!err.response) {
+      if (!err.response?.data) {
         console.log("no server response");
       } else {
         console.log(err.response?.data);
