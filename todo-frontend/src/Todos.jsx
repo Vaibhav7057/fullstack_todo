@@ -39,7 +39,6 @@ const Todos = () => {
         let arrayOfPages = new Array(totalPages).fill(1);
         setPages(arrayOfPages);
         setIsLoading(false);
-        console.log(res.data.todos);
       })
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false));
