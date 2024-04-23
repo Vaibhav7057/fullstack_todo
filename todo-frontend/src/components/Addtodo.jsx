@@ -76,7 +76,7 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
           onChange={(e) =>
             setTodo((pre) => ({
               ...pre,
-              deadline: e.target.value.toLocaleString("en-US"),
+              deadline: e.target.value.toLocaleString("en-IN"),
             }))
           }
         />

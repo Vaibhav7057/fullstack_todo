@@ -23,7 +23,7 @@ const Todos = () => {
   const [searchKey, setSearchKey] = useState("");
   const search = SearchFunction(setSearchKey, 500);
   const [changed, setChanged] = useState(false);
-  const today = new Date().toLocaleDateString("en-us", {
+  const today = new Date().toLocaleDateString("en-IN", {
     weekday: "long",
     // year: "numeric",
     month: "short",
@@ -229,44 +229,32 @@ const Todos = () => {
                         {todo.description}
                       </td>
                       <td className=" lg:col-span-1.5  hidden lg:block place-self-center px-1 ">
-                        {new Date(todo.createdAt).toLocaleDateString(
-                          undefined,
-                          {
-                            year: "numeric",
-                            month: "numeric",
-                            day: "numeric",
-                          }
-                        )}{" "}
+                        {new Date(todo.createdAt).toLocaleDateString("en-IN", {
+                          year: "numeric",
+                          month: "numeric",
+                          day: "numeric",
+                        })}{" "}
                         <br />
-                        {new Date(todo.createdAt).toLocaleTimeString(
-                          undefined,
-                          {
-                            hour: "numeric",
-                            minute: "numeric",
-                            hour12: true,
-                          }
-                        )}
+                        {new Date(todo.createdAt).toLocaleTimeString("en-IN", {
+                          hour: "numeric",
+                          minute: "numeric",
+                          hour12: true,
+                        })}
                       </td>
                       <td className=" md:col-span-2 hidden md:block place-self-center px-1 mx-1 ">
                         {todo.deadline &&
-                          new Date(todo.deadline).toLocaleDateString(
-                            undefined,
-                            {
-                              year: "numeric",
-                              month: "numeric",
-                              day: "numeric",
-                            }
-                          )}{" "}
+                          new Date(todo.deadline).toLocaleDateString("en-IN", {
+                            year: "numeric",
+                            month: "numeric",
+                            day: "numeric",
+                          })}{" "}
                         <br />
                         {todo.deadline &&
-                          new Date(todo.deadline).toLocaleTimeString(
-                            undefined,
-                            {
-                              hour: "numeric",
-                              minute: "numeric",
-                              hour12: true,
-                            }
-                          )}
+                          new Date(todo.deadline).toLocaleTimeString("en-IN", {
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: true,
+                          })}
                       </td>
                       <td className=" col-span-1 place-self-center px-1">
                         <input
