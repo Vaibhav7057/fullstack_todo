@@ -19,7 +19,7 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log(todo?.deadline);
+
     try {
       const res = await secureAxios({
         method: todoId ? "PUT" : "POST",
