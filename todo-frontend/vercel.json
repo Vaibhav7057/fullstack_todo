@@ -8,5 +8,5 @@
     { "src": "/api/(.*)", "dest": "https://todobackend-3gdj.onrender.com" },
     { "src": "/(.)", "dest": "dist/index.html" }
   ],
-  "rewrites": [{ "source": "/signin", "destination": "/signin.jsx" }]
+  "rewrites": [{ "source": "/signin", "destination": "/index.html" }]
 }
