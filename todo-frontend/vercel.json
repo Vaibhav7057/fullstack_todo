@@ -1,6 +1,12 @@
 {
+  "build": {
+    "src": "src",
+    "output": "dist",
+    "command": "npm run build"
+  },
   "routes": [
     { "src": "/api/(.*)", "dest": "https://todobackend-3gdj.onrender.com" },
-    { "src": "/(.)", "dest": "https://todo-gedamecosystem.vercel.app" }
-  ]
+    { "src": "/(.)", "dest": "dist/index.html" }
+  ],
+  "rewrites": [{ "source": "/signin", "destination": "/signin.jsx" }]
 }
