@@ -3,7 +3,6 @@ import PrivatePath from "../auth/PrivatePath";
 import { useSelector } from "react-redux";
 import { setUserDetails } from "../reduxStore/Slices/userSlice";
 import { useDispatch } from "react-redux";
-import { AiOutlineCloudUpload } from "react-icons/ai";
 
 const Updatephoto = ({ setImg, public_id, operation }) => {
   const [profilephoto, setprofilephoto] = useState(null);
@@ -27,10 +26,16 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
   };
 
   const upload = async function () {
+    if (!profilephoto) {
+      setImg(false);
+      return;
+    }
     setLoading(true);
     const formdata = new FormData();
     formdata.append("profilephoto", profilephoto);
+
     formdata.append("public_id", userDetails.profilephoto?.public_id || "");
+    console.log(profilephoto.name);
     await secureAxios
       .post("/api/user/updateprofilephoto", formdata, {
         headers: {
@@ -42,16 +47,18 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
         inputFile.current.value = null;
         setLoading(false);
         setImg(false);
-        console.log(res);
       })
       .catch((err) => {
         setImg(false);
-        console.log(err);
       })
       .finally(() => setLoading(false));
   };
 
   const deletephoto = async function () {
+    if (!userDetails?.profilephoto?.url) {
+      setImg(false);
+      return;
+    }
     setLoading(true);
     await secureAxios
       .post(`/api/user/deleteprofilephoto/${public_id}`)
@@ -74,78 +81,92 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
   return (
     <div className="">
       {operation === "update" && (
-        <>
+        <div className="border border-1 border-slate-600 bg-white flex flex-col justify-center items-center p-3 py-7 gap-7 rounded-md ">
+          <div
+            className="w-[100px] h-[100px] border border-1 border-slate-600 overflow-hidden hover:cursor-pointer "
+            onClick={() => {
+              inputFile.current.click();
+            }}
+          >
+            {profilephoto ? (
+              <img
+                src={URL.createObjectURL(profilephoto)}
+                alt="profile photo"
+                className="w-full h-full"
+              />
+            ) : (
+              <img
+                src={userDetails?.profilephoto?.url ?? "/images/user.png"}
+                alt="profile photo"
+                className="w-full h-full"
+              />
+            )}
+          </div>
           <div className="bg-white rounded-md px-5 py-3 flex gap-3">
             <input
               type="file"
-              onChange={(e) => setprofilephoto(e.target.files[0])}
+              onChange={(e) => {
+                setprofilephoto(e.target.files[0]);
+              }}
               ref={inputFile}
               accept="image/*"
               id="upload"
               className="hidden"
             />
-            <label
-              htmlFor="upload"
-              className="bg-orange-900 px-3 py-2 rounded-md text-white mr-3 text-xs hover:cursor-pointer flex justify-center items-center gap-2 "
-            >
-              <span>
-                <AiOutlineCloudUpload />
-              </span>
-              Add Photo
-            </label>
+
             <button
               onClick={upload}
-              className=" bg-green-300 px-3 py-2 rounded-md  mr-3 text-xs "
+              className=" bg-green-300 px-3 py-2 rounded-md  mr-3 text-xs border border-1 border-slate-400 hover:text-white hover:bg-green-700 "
             >
               Update
             </button>
             <button
               onClick={() => setImg(false)}
-              className=" bg-red-300 px-3 py-2 rounded-md  text-xs"
+              className=" bg-red-300 px-3 py-2 rounded-md  text-xs border border-1 border-slate-400 hover:text-white hover:bg-red-700 "
             >
               Cancel
             </button>
           </div>
           {loading ? (
-            <p className="text-center text-yellow-300">
+            <p className="text-center text-slate-800">
               ...processing your request
             </p>
           ) : (
             ""
           )}
-        </>
+        </div>
       )}
       {operation === "delete" && (
-        <>
-          <div className="px-10 py-4 bg-white rounded-md flex justify-between items-center ">
-            <div className="w-[50px] mr-10 h-[50px] rounded-full overflow-hidden text-black hover:cursor-pointer">
-              <img
-                src={userDetails?.profilephoto?.url ?? "/images/user.png"}
-                alt="user photo"
-                className="w-full h-full"
-              />
-            </div>
+        <div className="border border-1 border-slate-600 bg-white flex flex-col justify-center items-center p-3 py-7 gap-7 rounded-md ">
+          <div className="w-[100px] h-[100px] border border-1 border-slate-600 overflow-hidden ">
+            <img
+              src={userDetails?.profilephoto?.url ?? "/images/user.png"}
+              alt="profile photo"
+              className="w-full h-full"
+            />
+          </div>
+          <div className="bg-white rounded-md px-5 py-3 flex gap-3">
             <button
               onClick={deletephoto}
-              className="mt-0 bg-green-300 px-3 py-2 rounded-md  mr-3 text-xs"
+              className=" bg-green-300 px-3 py-2 rounded-md  mr-3 text-xs border border-1 border-slate-400 hover:text-white hover:bg-green-700 "
             >
-              Delete Photo
+              Remove
             </button>
             <button
               onClick={() => setImg(false)}
-              className="mt-0 bg-red-300 px-3 py-2 rounded-md  mr-3 text-xs"
+              className=" bg-red-300 px-3 py-2 rounded-md  text-xs border border-1 border-slate-400 hover:text-white hover:bg-red-700 "
             >
               Cancel
             </button>
           </div>
           {loading ? (
-            <p className="text-center text-yellow-300">
+            <p className="text-center text-slate-800">
               ...processing your request
             </p>
           ) : (
             ""
           )}
-        </>
+        </div>
       )}
     </div>
   );

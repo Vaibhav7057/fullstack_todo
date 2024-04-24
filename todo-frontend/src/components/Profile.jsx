@@ -53,7 +53,7 @@ const Profile = () => {
 
         <ul
           ref={menuref}
-          className={`min-w-[110px] absolute top-14 left-10 sm:left-0 p-2 text-sm font-medium space-y-1 bg-slate-300 shadow-2xl ${
+          className={`min-w-[110px] absolute top-14 left-0 p-2 text-sm font-medium space-y-1 bg-slate-300 shadow-2xl ${
             showmenu ? "block" : "hidden"
           } `}
         >
