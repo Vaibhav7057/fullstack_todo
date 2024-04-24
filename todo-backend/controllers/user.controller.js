@@ -323,6 +323,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 const updatephoto = asyncHandler(async (req, res, next) => {
   const userId = req.user._id;
   const { public_id } = req.body;
+
   const avatarLocalPath = req.file?.path;
 
   if (!avatarLocalPath) throw new ApiError(404, "file not found");
@@ -355,7 +356,7 @@ const updatephoto = asyncHandler(async (req, res, next) => {
         200,
         "your profile photo has been updated successfully",
         "imgUrl",
-        profilephoto.url
+        req.file
       )
     );
 });
