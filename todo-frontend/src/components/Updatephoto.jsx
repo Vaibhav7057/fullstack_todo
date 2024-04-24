@@ -42,11 +42,11 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
         inputFile.current.value = null;
         setLoading(false);
         setImg(false);
-        console.log(res.data);
+        console.log(res);
       })
       .catch((err) => {
         setImg(false);
-        console.log(err.response?.data);
+        console.log(err);
       })
       .finally(() => setLoading(false));
   };
