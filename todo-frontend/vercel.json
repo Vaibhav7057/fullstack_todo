@@ -1,5 +1,6 @@
 {
   "routes": [
-    { "src": "/api/(.*)", "dest": "https://todobackend-3gdj.onrender.com" }
+    { "src": "/api/(.*)", "dest": "https://todobackend-3gdj.onrender.com" },
+    { "src": "/(.)", "dest": "dist/index.html" }
   ]
 }
