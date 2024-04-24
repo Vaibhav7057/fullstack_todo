@@ -1,11 +1,5 @@
 {
   "routes": [
     { "src": "/api/(.*)", "dest": "https://todobackend-3gdj.onrender.com" }
-  ],
-  "rewrites": [
-    {
-      "source": "/signin",
-      "destination": "https://todo-gedamecosystem.vercel.app/signin"
-    }
   ]
 }
