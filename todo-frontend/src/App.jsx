@@ -1,5 +1,6 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { useEffect } from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import Todos from "./Todos";
 import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
@@ -13,6 +14,24 @@ import Updateinfo from "./pages/Updateinfo.jsx";
 import Changepass from "./components/Changepass.jsx";
 import Forgotpass from "./components/Forgotpass.jsx";
 function App() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === "Enter" && document.activeElement === document.body) {
+        event.preventDefault();
+        const typedUrl = document.location.href;
+        navigate(typedUrl);
+      }
+    };
+
+    document.addEventListener("keypress", handleKeyPress);
+
+    return () => {
+      document.removeEventListener("keypress", handleKeyPress);
+    };
+  }, [history]);
+
   return (
     <Routes>
       <Route element={<PersistLogin />}>
