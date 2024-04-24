@@ -35,7 +35,6 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
     formdata.append("profilephoto", profilephoto);
 
     formdata.append("public_id", userDetails.profilephoto?.public_id || "");
-    console.log(profilephoto.name);
     await secureAxios
       .post("/api/user/updateprofilephoto", formdata, {
         headers: {
@@ -46,9 +45,11 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
         getuserdetails();
         inputFile.current.value = null;
         setLoading(false);
+        console.log(res.data);
         setImg(false);
       })
       .catch((err) => {
+        console.log(err);
         setImg(false);
       })
       .finally(() => setLoading(false));
@@ -68,10 +69,10 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
         setImg(false);
       })
       .catch((err) => {
-        if (!err.response) {
+        if (!err.response?.data) {
           console.log("no server response");
         } else {
-          console.log(err.response?.data);
+          console.log(err.response.data);
         }
         setImg(false);
       })
