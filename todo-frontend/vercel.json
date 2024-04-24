@@ -1,6 +1,12 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": {
+    "source": "/",
+    "destination": "/index.html"
+  },
+
   "routes": [
-    { "src": "/api/(.*)", "dest": "https://todobackend-3gdj.onrender.com" },
-    { "src": "/(.*)", "dest": "/" }
+    { "src": "/api/(.*)", "dest": "https://todobackend-3gdj.onrender.com" }
   ]
 }
