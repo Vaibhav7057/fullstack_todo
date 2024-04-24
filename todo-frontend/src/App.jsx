@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
+
 import Todos from "./Todos";
 import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
@@ -13,6 +14,7 @@ import DeleteAccount from "./pages/DeleteAccount.jsx";
 import Updateinfo from "./pages/Updateinfo.jsx";
 import Changepass from "./components/Changepass.jsx";
 import Forgotpass from "./components/Forgotpass.jsx";
+
 function App() {
   const navigate = useNavigate();
 
@@ -30,7 +32,7 @@ function App() {
     return () => {
       document.removeEventListener("keypress", handleKeyPress);
     };
-  }, [history]);
+  }, [navigate]);
 
   return (
     <Routes>
