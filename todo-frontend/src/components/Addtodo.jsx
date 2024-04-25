@@ -40,7 +40,7 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
   }
 
   return (
-    <div className="controldiv max-h-80 text-md pb-5 border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-6  mt-16 ">
+    <div className="controldiv max-h-80 text-sm pb-5 border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-6  mt-16 ">
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -50,7 +50,7 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
             setTodo((pre) => ({ ...pre, title: e.target.value }))
           }
           placeholder="title for your todo"
-          className="bg-red-100 rounded-md px-2 mb-4 border border-1 border-slate-400 outline-none w-full placeholder:italic placeholder:text-slate-400 placeholder:text-sm"
+          className="bg-red-100 rounded-md px-2 py-1 mb-4 border border-1 border-slate-400 outline-none w-full placeholder:italic placeholder:text-slate-400 placeholder:text-sm"
           required
         />{" "}
         <br />
@@ -61,7 +61,7 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
           onChange={(e) =>
             setTodo((pre) => ({ ...pre, description: e.target.value }))
           }
-          className=" bg-red-100 rounded-md px-2 mb-4 border border-1 border-slate-400 outline-none w-full placeholder:italic placeholder:text-slate-400 placeholder:text-sm "
+          className=" bg-red-100 rounded-md px-2 py-1 mb-4 border border-1 border-slate-400 outline-none w-full placeholder:italic placeholder:text-slate-400 placeholder:text-sm "
         />
         <br />
         <label htmlFor="deadline" className="font-bold text-sm ">

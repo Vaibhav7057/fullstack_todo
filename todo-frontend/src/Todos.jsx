@@ -147,7 +147,7 @@ const Todos = () => {
               Todo List App
             </h1>
             {userDetails && (
-              <div className="font-bold text-sm sm:text-[1.5vmax]">
+              <div className="text-sm font-display font-medium sm:text-[1.5vmax]">
                 <h3 className="sm:mb-3">Welcome,</h3>
                 <h3>{userDetails?.fullName}</h3>
               </div>

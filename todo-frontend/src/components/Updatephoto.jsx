@@ -62,7 +62,7 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
     }
     setLoading(true);
     await secureAxios
-      .post(`/api/user/deleteprofilephoto/${public_id}`)
+      .post("/api/user/deleteprofilephoto", { public_id: public_id })
       .then((res) => {
         getuserdetails();
         setLoading(false);
