@@ -1,18 +1,38 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import useLogout from "../auth/useLogout";
 import Updatephoto from "./Updatephoto";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { userlogout } from "../reduxStore/Slices/userSlice";
+import PrivatePath from "../auth/PrivatePath";
 
 const Profile = () => {
-  const logout = useLogout();
   const [showmenu, setShowmenu] = useState(false);
   const [img, setImg] = useState(false);
   const [operation, setOperation] = useState("delete");
+  const dispatch = useDispatch();
   const { userDetails } = useSelector((state) => state.user);
   const public_id = userDetails?.profilephoto?.public_id;
   const navigate = useNavigate();
   const menuref = useRef();
+  const secureAxios = PrivatePath();
+
+  async function logout() {
+    try {
+      const res = await secureAxios.get("/api/user/logout");
+      if (res.data?.success) {
+        dispatch(userlogout());
+        localStorage.setItem("persist", false);
+        navigate("/signin");
+      }
+    } catch (err) {
+      if (!err.response) {
+        console.log("no server response");
+      } else {
+        console.log(err.response?.data);
+      }
+    }
+  }
 
   useEffect(() => {
     const handler = (e) => {

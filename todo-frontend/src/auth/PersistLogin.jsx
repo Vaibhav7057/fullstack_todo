@@ -6,8 +6,9 @@ import Loader from "../components/Loader";
 
 const PersistLogin = () => {
   const [isLoading, setIsLoading] = useState(true);
+
   const { accessToken } = useSelector((state) => state.user);
-  const persist = localStorage.getItem("persist") || false;
+  const persist = JSON.parse(localStorage.getItem("persist")) || false;
 
   const refresh = useRefresh();
 
@@ -29,9 +30,7 @@ const PersistLogin = () => {
     return () => (isMounted = false);
   }, []);
 
-  return (
-    <div>{!persist ? <Outlet /> : isLoading ? <Loader /> : <Outlet />}</div>
-  );
+  return <>{!persist ? <Outlet /> : isLoading ? <Loader /> : <Outlet />}</>;
 };
 
 export default PersistLogin;
