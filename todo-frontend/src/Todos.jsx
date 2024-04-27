@@ -10,6 +10,7 @@ import Profile from "./components/Profile";
 import PrivatePath from "./auth/PrivatePath";
 import { setUserDetails } from "./reduxStore/Slices/userSlice";
 import SearchFunction from "./components/SearchFunction";
+import { BsFillInfoCircleFill } from "react-icons/bs";
 
 const Todos = () => {
   const { todos } = useSelector((state) => state.todo);
@@ -250,8 +251,8 @@ const Todos = () => {
                         onClick={(e) => expandtodo(e, todo)}
                       >
                         {todo.title}
-                        <span className="rounded-md text-xs sm:text-sm bg-white hover:cursor-pointer px-1 lg:hidden absolute top-0 right-0 border border-1 border-slate-600 ">
-                          see
+                        <span className="rounded-md text-xs sm:text-sm hover:cursor-pointer px-1 lg:hidden absolute top-0 right-0 mt-1">
+                          <BsFillInfoCircleFill />
                         </span>
                       </td>
                       <td className=" lg:col-span-3 hidden lg:block my-auto px-1  ">
