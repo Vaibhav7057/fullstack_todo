@@ -90,7 +90,7 @@ const Register = () => {
       )}
       <section className="controldiv text-md pb-5 border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-2 ">
         <h1 className="font-bold text-xl  text-indigo-950 my-4 ">
-          Become a Member
+          Create your account
         </h1>
         <form onSubmit={handleSubmit}>
           <label htmlFor="fullName" className="font-bold text-sm ">

@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import PrivatePath from "../auth/PrivatePath";
 
 const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
   const [todo, setTodo] = useState({});
+  const todoRef = useRef();
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const secureAxios = PrivatePath();
@@ -18,6 +19,20 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
         .catch((err) => console.log(err.message));
     }
   }, [todoId]);
+
+  useEffect(() => {
+    const todoBoxHandler = (e) => {
+      if (!todoRef.current.contains(e.target)) {
+        setShow(false);
+      }
+    };
+
+    document.addEventListener("mousedown", todoBoxHandler);
+
+    return () => {
+      document.removeEventListener("mousedown", todoBoxHandler);
+    };
+  }, [setTodo]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -49,7 +64,10 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
   }
 
   return (
-    <div className="controldiv max-h-80 text-sm pb-5 border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-6  mt-16 ">
+    <div
+      ref={todoRef}
+      className="controldiv max-h-80 text-sm pb-5 border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-6  mt-16 "
+    >
       <p
         className={`text-black mb-2 text-center  ${
           errMsg ? "block" : "hidden"
