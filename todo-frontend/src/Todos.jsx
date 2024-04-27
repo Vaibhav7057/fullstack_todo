@@ -246,10 +246,13 @@ const Todos = () => {
                         {i + 1}
                       </td>
                       <td
-                        className=" col-span-2 my-auto px-1"
+                        className="relative col-span-2 my-auto px-1 "
                         onClick={(e) => expandtodo(e, todo)}
                       >
                         {todo.title}
+                        <span className="rounded-md text-xs sm:text-sm bg-white hover:cursor-pointer px-1 lg:hidden absolute top-0 right-0 border border-1 border-slate-600 ">
+                          see
+                        </span>
                       </td>
                       <td className=" lg:col-span-3 hidden lg:block my-auto px-1  ">
                         {todo.description}
