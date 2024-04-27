@@ -346,7 +346,7 @@ const Todos = () => {
                         Description
                       </h4>
                       <p className="mb-1 text-sm sm:text-lg">
-                        {expandedTodo.discription}
+                        {expandedTodo.description}
                       </p>
                       <h4 className="text-sm sm:text-lg mb-1 font-bold ">
                         CreatedAt
