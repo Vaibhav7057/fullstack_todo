@@ -75,7 +75,7 @@ const Login = () => {
       </p>
       {loading ? (
         <p className="text-center text-white">
-          ...loging you in kindly hold for second
+          ...logging you in, kindly hold for second
         </p>
       ) : (
         ""
