@@ -11,6 +11,7 @@ const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const Changepass = () => {
   const [password, setPassword] = useState({});
   const [validPassword, setValidPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [validMatch, setValidMatch] = useState(false);
   const [showPass, setShowPass] = useState(false);
   const [showOldPass, setShowOldPass] = useState(false);
@@ -32,6 +33,7 @@ const Changepass = () => {
       setErrMsg("Invalid Entry");
       return;
     }
+    setLoading(true);
     secureAxios
       .patch("/api/user/password/update", password, {
         headers: { "Content-Type": "application/json" },
@@ -39,6 +41,7 @@ const Changepass = () => {
       .then((res) => {
         console.log(res.data);
         setPassword({});
+        setLoading(false);
         navigate("/");
       })
       .catch((error) => {
@@ -48,7 +51,8 @@ const Changepass = () => {
         } else {
           setErrMsg(err.message);
         }
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -68,6 +72,11 @@ const Changepass = () => {
       <p className={` text-yellow-300  ${errMsg ? "block" : "hidden"}`}>
         {errMsg}
       </p>
+      {loading ? (
+        <p className="text-center text-white">...changing you password</p>
+      ) : (
+        ""
+      )}
       <section className=" border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-2  ">
         <h1 className="font-bold text-md text-indigo-950 my-4 ">
           Change your account password

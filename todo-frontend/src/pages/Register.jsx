@@ -13,6 +13,7 @@ const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const Register = () => {
   const [errMsg, setErrMsg] = useState("");
   const [user, setUser] = useState({});
+  const [loading, setLoading] = useState(false);
   const [validEmail, setValidEmail] = useState(false);
   const [validPassword, setValidPassword] = useState(false);
   const [showPass, setShowPass] = useState(false);
@@ -34,12 +35,14 @@ const Register = () => {
       setErrMsg("Invalid Entry");
       return;
     }
+    setLoading(true);
     axios
       .post("/api/user/register", user, {
         headers: { "Content-Type": "application/json" },
       })
       .then((res) => {
         setUser({});
+        setLoading(false);
         navigate("/signin");
       })
       .catch((error) => {
@@ -50,7 +53,8 @@ const Register = () => {
           setErrMsg(err.message);
         }
         errRef.current.focus();
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -77,6 +81,13 @@ const Register = () => {
       <p className={` text-yellow-300  ${errMsg ? "block" : "hidden"}`}>
         {errMsg}
       </p>
+      {loading ? (
+        <p className="text-center text-white">
+          ...creating your account please wait
+        </p>
+      ) : (
+        ""
+      )}
       <section className="controldiv text-md pb-5 border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-2 ">
         <h1 className="font-bold text-xl  text-indigo-950 my-4 ">
           Become a Member

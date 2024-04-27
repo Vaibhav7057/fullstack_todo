@@ -10,6 +10,7 @@ const Login = () => {
   const [persist, setPersist] = useState(false);
   const [user, setUser] = useState({});
   const [showPass, setShowPass] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
     axios
       .post("/api/user/login", user, {
         headers: { "Content-Type": "application/json" },
@@ -33,6 +35,7 @@ const Login = () => {
         const accessToken = res?.data?.token;
         dispatch(setAccessToken(accessToken));
         setUser({});
+        setLoading(false);
         navigate(from, { replace: true });
       })
       .catch((error) => {
@@ -42,7 +45,8 @@ const Login = () => {
         } else {
           setErrMsg(err.message);
         }
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   const togglePersist = () => {
@@ -69,6 +73,13 @@ const Login = () => {
       <p className={`text-yellow-300   ${errMsg ? "block" : "hidden"}`}>
         {errMsg}
       </p>
+      {loading ? (
+        <p className="text-center text-white">
+          ...loging you in kindly hold for second
+        </p>
+      ) : (
+        ""
+      )}
       <section className="controldiv text-md pb-5 border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-2 ">
         <h1 className="font-bold text-xl pl-7 text-indigo-950 my-4 ">
           Sign In

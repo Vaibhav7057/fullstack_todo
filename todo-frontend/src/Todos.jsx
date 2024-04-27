@@ -1,4 +1,5 @@
 import React from "react";
+import { useRef } from "react";
 import { useState, useEffect } from "react";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
@@ -12,6 +13,7 @@ import SearchFunction from "./components/SearchFunction";
 
 const Todos = () => {
   const { todos } = useSelector((state) => state.todo);
+  const popupRef = useRef();
   const { userDetails } = useSelector((state) => state.user);
   const [isLoading, setIsLoading] = useState(true);
   const [pages, setPages] = useState([]);
@@ -19,6 +21,7 @@ const Todos = () => {
   const dispatch = useDispatch();
   const secureAxios = PrivatePath();
   const [show, setShow] = useState(false);
+  const [expandedTodo, setExpandedTodo] = useState(null);
   const [todoId, setTodoId] = useState("");
   const [searchKey, setSearchKey] = useState("");
   const search = SearchFunction(setSearchKey, 500);
@@ -59,6 +62,11 @@ const Todos = () => {
       })
       .catch((err) => console.log(err));
   };
+
+  function expandtodo(event, todo) {
+    event.stopPropagation();
+    setExpandedTodo(todo);
+  }
 
   useEffect(() => {
     if (searchKey) {
@@ -131,6 +139,20 @@ const Todos = () => {
       getsearchtodos(searchKey);
     }
   };
+
+  useEffect(() => {
+    const popupHandler = (e) => {
+      if (popupRef.current && !popupRef.current.contains(e.target)) {
+        setExpandedTodo(null);
+      }
+    };
+
+    document.addEventListener("mousedown", popupHandler);
+
+    return () => {
+      document.removeEventListener("mousedown", popupHandler);
+    };
+  }, [setExpandedTodo]);
 
   const Loader = (
     <div className="flex justify-center items-center w-full h-full min-h-[70vh] bg-[#0e2a33]">
@@ -223,7 +245,10 @@ const Todos = () => {
                       <td className=" col-span-.5 place-self-center px-1 ">
                         {i + 1}
                       </td>
-                      <td className=" col-span-2 my-auto px-1 ">
+                      <td
+                        className=" col-span-2 my-auto px-1"
+                        onClick={(e) => expandtodo(e, todo)}
+                      >
                         {todo.title}
                       </td>
                       <td className=" lg:col-span-3 hidden lg:block my-auto px-1  ">
@@ -297,6 +322,85 @@ const Todos = () => {
                     </tr>
                   ))}
                 </tbody>
+                {expandedTodo && (
+                  <div className="fixed text-md top-0 left-0 w-full h-full flex lg:hidden justify-center items-center bg-transparent">
+                    <div
+                      className="w-[170px] sm:w-[230px] flex flex-col h-auto bg-white px-3 py-2 border border-slate-400 rounded-md "
+                      ref={popupRef}
+                    >
+                      <button
+                        onClick={() => {
+                          setExpandedTodo(null);
+                        }}
+                        className="self-end text-red-700 text-sm sm:text-lg"
+                      >
+                        Close
+                      </button>
+                      <h4 className="text-sm sm:text-lg mb-1 font-bold ">
+                        Title
+                      </h4>
+                      <p className="mb-1 text-sm sm:text-lg">
+                        {expandedTodo.title}
+                      </p>
+                      <h4 className="text-sm sm:text-lg mb-1 font-bold ">
+                        Description
+                      </h4>
+                      <p className="mb-1 text-sm sm:text-lg">
+                        {expandedTodo.discription}
+                      </p>
+                      <h4 className="text-sm sm:text-lg mb-1 font-bold ">
+                        CreatedAt
+                      </h4>
+                      <p className="mb-1 text-sm sm:text-lg">
+                        {expandedTodo.createdAt &&
+                          new Date(expandedTodo.createdAt).toLocaleString(
+                            undefined,
+                            {
+                              year: "numeric",
+                              month: "numeric",
+                              day: "numeric",
+                            }
+                          )}{" "}
+                        <span className="ml-3 text-slate-700 ">
+                          {expandedTodo.createdAt &&
+                            new Date(expandedTodo.createdAt).toLocaleString(
+                              undefined,
+                              {
+                                hour: "numeric",
+                                minute: "numeric",
+                                hour12: true,
+                              }
+                            )}
+                        </span>
+                      </p>
+                      <h4 className="text-sm sm:text-lg mb-1 font-bold ">
+                        Deadline
+                      </h4>
+                      <p className="mb-1 text-sm sm:text-lg">
+                        {expandedTodo.deadline &&
+                          new Date(expandedTodo.deadline).toLocaleString(
+                            undefined,
+                            {
+                              year: "numeric",
+                              month: "numeric",
+                              day: "numeric",
+                            }
+                          )}
+                        <span className="ml-3 text-slate-700 ">
+                          {expandedTodo.deadline &&
+                            new Date(expandedTodo.deadline).toLocaleString(
+                              undefined,
+                              {
+                                hour: "numeric",
+                                minute: "numeric",
+                                hour12: true,
+                              }
+                            )}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                )}
               </table>
             )}
             {todos?.length > 0 && (
