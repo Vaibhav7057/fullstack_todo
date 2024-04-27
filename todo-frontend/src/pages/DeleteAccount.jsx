@@ -29,7 +29,7 @@ const DeleteAccount = () => {
     <div className="w-screen h-screen bg-[#011015] text-white flex justify-center items-center ">
       <div className="">
         {loading ? (
-          <p>...processing your request</p>
+          <p>...deleting your account, please wait</p>
         ) : (
           <p>Do you really want to delete your account?</p>
         )}

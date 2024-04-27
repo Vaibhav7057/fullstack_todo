@@ -208,9 +208,9 @@ const Register = () => {
             </p>
           </div>
           <button
-            disabled={!validEmail || !validPassword ? true : false}
+            disabled={validEmail && validPassword ? false : true}
             className={` rounded-md text-center w-full text-black font-medium my-4 ${
-              !validEmail || !validPassword ? "bg-slate-300" : "bg-yellow-400"
+              validEmail && validPassword ? "bg-yellow-400" : "bg-slate-300"
             }`}
           >
             Create Account

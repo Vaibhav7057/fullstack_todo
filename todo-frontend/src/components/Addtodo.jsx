@@ -4,6 +4,8 @@ import PrivatePath from "../auth/PrivatePath";
 
 const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
   const [todo, setTodo] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [errMsg, setErrMsg] = useState("");
   const secureAxios = PrivatePath();
 
   useEffect(() => {
@@ -19,28 +21,49 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
 
   async function handleSubmit(e) {
     e.preventDefault();
-
-    try {
-      const res = await secureAxios({
-        method: todoId ? "PUT" : "POST",
-        url: `/api/todos/${todoId ? "edittodo/" + todoId : "createtodo"}`,
-        data: todo,
-      });
-    } catch (err) {
-      if (!err.response?.data) {
-        console.log("no server response");
-      } else {
-        console.log(err.response?.data);
-      }
-    }
-    setTodoId("");
-    setTodo({});
-    setChanged((pre) => !pre);
-    setShow(false);
+    setErrMsg("");
+    setLoading(true);
+    secureAxios({
+      method: todoId ? "PUT" : "POST",
+      url: `/api/todos/${todoId ? "edittodo/" + todoId : "createtodo"}`,
+      data: todo,
+    })
+      .then((res) => {
+        setLoading(false);
+        setTodoId("");
+        setTodo({});
+        setChanged((pre) => !pre);
+        setShow(false);
+      })
+      .catch((error) => {
+        const err = error.response?.data;
+        if (!err.response?.data) {
+          console.log("no server response");
+          setErrMsg("no server response");
+        } else {
+          console.log(err);
+          setErrMsg(err.message);
+        }
+      })
+      .finally(() => setLoading(false));
   }
 
   return (
     <div className="controldiv max-h-80 text-sm pb-5 border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-6  mt-16 ">
+      <p
+        className={`text-black mb-2 text-center  ${
+          errMsg ? "block" : "hidden"
+        }`}
+      >
+        {errMsg}
+      </p>
+      {loading ? (
+        <p className="text-center text-black mb-2">
+          {todoId ? "updating" : "adding"} your todo
+        </p>
+      ) : (
+        ""
+      )}
       <form onSubmit={handleSubmit}>
         <input
           type="text"
