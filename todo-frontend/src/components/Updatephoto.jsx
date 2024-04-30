@@ -3,9 +3,13 @@ import PrivatePath from "../auth/PrivatePath";
 import { useSelector } from "react-redux";
 import { setUserDetails } from "../reduxStore/Slices/userSlice";
 import { useDispatch } from "react-redux";
+import ReactProfile, { ALL_FILTERS } from "react-profile";
+import "react-profile/themes/default.min.css";
 
 const Updatephoto = ({ setImg, public_id, operation }) => {
   const [profilephoto, setprofilephoto] = useState(null);
+  const [croppedPhoto, setCroppedPhoto] = useState(null);
+  const [showCropped, setShowCropped] = useState(null);
   const [loading, setLoading] = useState(false);
   const inputFile = useRef(null);
   const secureAxios = PrivatePath();
@@ -26,13 +30,13 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
   };
 
   const upload = async function () {
-    if (!profilephoto) {
+    if (!croppedPhoto) {
       setImg(false);
       return;
     }
     setLoading(true);
     const formdata = new FormData();
-    formdata.append("profilephoto", profilephoto);
+    formdata.append("profilephoto", croppedPhoto);
 
     formdata.append("public_id", userDetails.profilephoto?.public_id || "");
     await secureAxios
@@ -79,19 +83,45 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
       .finally(() => setLoading(false));
   };
 
+  const handleCropComplete = async (exportObject) => {
+    const blob = await exportObject.getBlob();
+    const dataURL = exportObject.getDataURL();
+    setCroppedPhoto(blob);
+    setShowCropped(dataURL);
+  };
+
   return (
-    <div className="">
+    <div>
       {operation === "update" && (
         <div className="border border-1 border-slate-600 bg-white flex flex-col justify-center items-center p-3 py-7 gap-7 rounded-md ">
+          {profilephoto && (
+            <ReactProfile
+              key={profilephoto.name}
+              src={profilephoto}
+              filters={ALL_FILTERS}
+              square
+              initCrop={{
+                unit: "%",
+                width: 50,
+                height: 50,
+                x: 25,
+                y: 25,
+              }}
+              onDone={handleCropComplete}
+            />
+          )}
           <div
-            className="w-[100px] h-[100px] border border-1 border-slate-600 overflow-hidden hover:cursor-pointer "
+            className="border border-black p-1 rounded-md hover:cursor-pointer text-sm "
             onClick={() => {
               inputFile.current.click();
             }}
           >
-            {profilephoto ? (
+            Select Photo
+          </div>
+          <div className="w-[100px] h-[100px] border border-1 border-slate-600 overflow-hidden hover:cursor-pointer ">
+            {showCropped ? (
               <img
-                src={URL.createObjectURL(profilephoto)}
+                src={showCropped}
                 alt="profile photo"
                 className="w-full h-full"
               />
@@ -174,13 +204,3 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
 };
 
 export default Updatephoto;
-
-// const [files, setFiles] = useState([]);
-// function handleMultipleChange(event) {
-//   setFiles([...event.target.files]);
-// }
-
-// const formData = new FormData();
-// files.forEach((file, index) => {
-//   formData.append(`file${index}`, file);
-// });
