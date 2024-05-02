@@ -17,6 +17,7 @@ const Todos = () => {
   const popupRef = useRef();
   const { userDetails } = useSelector((state) => state.user);
   const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [pages, setPages] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const dispatch = useDispatch();
@@ -104,10 +105,11 @@ const Todos = () => {
   }, []);
 
   async function deleteTodo(id) {
+    setLoading(true);
     await secureAxios
       .delete(`/api/todos/deletetodo/${id}`)
       .then((res) => {
-        console.log(res);
+        setLoading(false);
         setChanged((pre) => !pre);
       })
       .catch((err) => {
@@ -116,14 +118,16 @@ const Todos = () => {
         } else {
           console.log(err.response?.data);
         }
-      });
+      })
+      .finally(() => setLoading(false));
   }
 
   async function editStatus(id, completed) {
+    setLoading(true);
     await secureAxios
       .put(`/api/todos/editstatus/${id}`, { completed })
       .then((res) => {
-        console.log(res);
+        setLoading(false);
         setChanged((pre) => !pre);
       })
       .catch((err) => {
@@ -132,7 +136,8 @@ const Todos = () => {
         } else {
           console.log(err.response?.data);
         }
-      });
+      })
+      .finally(() => setLoading(false));
   }
 
   const handleSearch = () => {
@@ -164,6 +169,7 @@ const Todos = () => {
   return (
     <>
       <div className=" h-auto bg-[#747C92] py-2 px-2 md:px-5 relative text-black text-lg ">
+        {loading ? <ServiceLoder text="...processing your request" /> : ""}
         <div className="w-full  py-5 bg-[#BBE1C3] px-5 rounded-lg flex flex-col gap-2 ">
           <div className="flex flex-col gap-2 sm:gap-0 sm:flex-row justify-between items-center px-24">
             <h1 className="font-bold text-2xl sm:text-[2.5vmax]">
