@@ -53,7 +53,7 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
       })
       .catch((error) => {
         const err = error.response?.data;
-        if (!err.response?.data) {
+        if (!err) {
           console.log("no server response");
           setErrMsg("no server response");
         } else {
