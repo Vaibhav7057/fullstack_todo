@@ -11,6 +11,7 @@ import PrivatePath from "./auth/PrivatePath";
 import { setUserDetails } from "./reduxStore/Slices/userSlice";
 import SearchFunction from "./components/SearchFunction";
 import { BsFillInfoCircleFill } from "react-icons/bs";
+import ServiceLoder from "./components/ServiceLoder";
 
 const Todos = () => {
   const { todos } = useSelector((state) => state.todo);
