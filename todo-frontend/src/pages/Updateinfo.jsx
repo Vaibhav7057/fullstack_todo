@@ -4,6 +4,7 @@ import PrivatePath from "../auth/PrivatePath";
 import { useSelector, useDispatch } from "react-redux";
 import { setUserDetails } from "../reduxStore/Slices/userSlice";
 import { BsFillInfoCircleFill } from "react-icons/bs";
+import ServiceLoder from "../components/ServiceLoder";
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -11,6 +12,7 @@ const Updateinfo = () => {
   const [user, setUser] = useState({});
   const [validEmail, setValidEmail] = useState(false);
   const [errMsg, setErrMsg] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { userDetails } = useSelector((state) => state.user);
@@ -26,11 +28,13 @@ const Updateinfo = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const v1 = EMAIL_REGEX.test(user?.email);
     if (!v1) {
       setErrMsg("Invalid Entry");
       return;
     }
+    setLoading(true);
     secureAxios
       .patch("/api/user/me/update", user, {
         headers: { "Content-Type": "application/json" },
@@ -39,6 +43,7 @@ const Updateinfo = () => {
         console.log(res.data);
         setUser({});
         dispatch(setUserDetails(res.data.user));
+        setLoading(false);
         navigate("/");
       })
       .catch((error) => {
@@ -48,7 +53,8 @@ const Updateinfo = () => {
         } else {
           setErrMsg(err.message);
         }
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -67,6 +73,8 @@ const Updateinfo = () => {
       <p className={` text-yellow-300  ${errMsg ? "block" : "hidden"}`}>
         {errMsg}
       </p>
+      {loading ? <ServiceLoder text="...updating your info" /> : ""}
+
       <section className="controldiv text-md pb-5 border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-2">
         <h1 className="font-bold text-xl  text-indigo-950 my-4 ">
           Update Your Details
@@ -139,7 +147,3 @@ const Updateinfo = () => {
 };
 
 export default Updateinfo;
-
-// navigate("/login", { state: { from: location }, replace: true });
-// const from = location.state?.from?.pathname || "/";
-// navigate(from, { replace: true });

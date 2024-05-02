@@ -6,6 +6,7 @@ import { AiFillEyeInvisible } from "react-icons/ai";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import { AiOutlineCheck } from "react-icons/ai";
 import { FaTimesCircle } from "react-icons/fa";
+import ServiceLoder from "../components/ServiceLoder";
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -82,9 +83,7 @@ const Register = () => {
         {errMsg}
       </p>
       {loading ? (
-        <p className="text-center text-white">
-          ...creating your account please wait
-        </p>
+        <ServiceLoder text="...creating your account please wait" />
       ) : (
         ""
       )}

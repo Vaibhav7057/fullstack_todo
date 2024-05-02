@@ -5,6 +5,7 @@ import { setUserDetails } from "../reduxStore/Slices/userSlice";
 import { useDispatch } from "react-redux";
 import ReactProfile, { ALL_FILTERS } from "react-profile";
 import "react-profile/themes/default.min.css";
+import ServiceLoder from "./ServiceLoder";
 
 const Updatephoto = ({ setImg, public_id, operation }) => {
   const [profilephoto, setprofilephoto] = useState(null);
@@ -158,13 +159,7 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
               Cancel
             </button>
           </div>
-          {loading ? (
-            <p className="text-center text-slate-800">
-              ...processing your request
-            </p>
-          ) : (
-            ""
-          )}
+          {loading ? <ServiceLoder text="...processing your request" /> : ""}
         </div>
       )}
       {operation === "delete" && (
@@ -190,13 +185,7 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
               Cancel
             </button>
           </div>
-          {loading ? (
-            <p className="text-center text-slate-800">
-              ...processing your request
-            </p>
-          ) : (
-            ""
-          )}
+          {loading ? <ServiceLoder text="...processing your request" /> : ""}
         </div>
       )}
     </div>

@@ -5,6 +5,7 @@ import { setAccessToken } from "../reduxStore/Slices/userSlice";
 import { AiFillEye } from "react-icons/ai";
 import { AiFillEyeInvisible } from "react-icons/ai";
 import axios from "axios";
+import ServiceLoder from "../components/ServiceLoder";
 
 const Login = () => {
   const [persist, setPersist] = useState(false);
@@ -74,9 +75,7 @@ const Login = () => {
         {errMsg}
       </p>
       {loading ? (
-        <p className="text-center text-white">
-          ...logging you in, kindly hold for second
-        </p>
+        <ServiceLoder text="...logging you in, kindly hold for second" />
       ) : (
         ""
       )}

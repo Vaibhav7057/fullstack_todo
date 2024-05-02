@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import PrivatePath from "../auth/PrivatePath";
+import ServiceLoder from "./ServiceLoder";
 
 const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
   const [todo, setTodo] = useState({});
@@ -76,9 +77,7 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
         {errMsg}
       </p>
       {loading ? (
-        <p className="text-center text-black mb-2">
-          {todoId ? "updating" : "adding"} your todo
-        </p>
+        <ServiceLoder text={`${todoId ? "updating" : "adding"} your todo`} />
       ) : (
         ""
       )}

@@ -5,6 +5,8 @@ import PrivatePath from "../auth/PrivatePath";
 import { useSelector } from "react-redux";
 import { setUserDetails } from "../reduxStore/Slices/userSlice";
 import { useDispatch } from "react-redux";
+import ServiceLoder from "../components/ServiceLoder";
+
 const DeleteAccount = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -29,7 +31,7 @@ const DeleteAccount = () => {
     <div className="w-screen h-screen bg-[#011015] text-white flex justify-center items-center ">
       <div className="">
         {loading ? (
-          <p>...deleting your account, please wait</p>
+          <ServiceLoder text="...deleting your account, please wait" />
         ) : (
           <p>Do you really want to delete your account?</p>
         )}

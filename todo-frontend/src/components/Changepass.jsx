@@ -5,6 +5,7 @@ import { AiFillEye } from "react-icons/ai";
 import { AiFillEyeInvisible } from "react-icons/ai";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import { useEffect } from "react";
+import ServiceLoder from "./ServiceLoder";
 
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
@@ -72,11 +73,7 @@ const Changepass = () => {
       <p className={` text-yellow-300  ${errMsg ? "block" : "hidden"}`}>
         {errMsg}
       </p>
-      {loading ? (
-        <p className="text-center text-white">...changing you password</p>
-      ) : (
-        ""
-      )}
+      {loading ? <ServiceLoder text="...changing your password" /> : ""}
       <section className=" border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-2  ">
         <h1 className="font-bold text-md text-indigo-950 my-4 ">
           Change your account password

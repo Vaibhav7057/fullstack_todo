@@ -5,6 +5,7 @@ import { AiFillEyeInvisible } from "react-icons/ai";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import axios from "axios";
 import { useEffect } from "react";
+import ServiceLoder from "./ServiceLoder";
 
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -89,11 +90,7 @@ const Forgotpass = () => {
       <p className={` text-yellow-300  ${errMsg ? "block" : "hidden"}`}>
         {errMsg}
       </p>
-      {loading ? (
-        <p className="text-center text-slate-300">...processing your request</p>
-      ) : (
-        ""
-      )}
+      {loading ? <ServiceLoder text="...processing your request" /> : ""}
       <section className=" min-w-[300px] border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-2 ">
         <h1 className="font-bold text-md text-indigo-950 my-4 ">
           Forgot password
