@@ -147,7 +147,7 @@ const Todos = () => {
       .put(`/api/todos/editstatus/${id}`, { completed })
       .then((res) => {
         setLoading(false);
-        toast.success("status edited successfully");
+        toast.success("status changed successfully");
         setChanged((pre) => !pre);
       })
       .catch((error) => {
