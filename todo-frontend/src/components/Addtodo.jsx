@@ -2,12 +2,12 @@ import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import PrivatePath from "../auth/PrivatePath";
 import ServiceLoder from "./ServiceLoder";
+import toast from "react-hot-toast";
 
 const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
   const [todo, setTodo] = useState({});
   const todoRef = useRef();
   const [loading, setLoading] = useState(false);
-  const [errMsg, setErrMsg] = useState("");
   const secureAxios = PrivatePath();
 
   useEffect(() => {
@@ -17,7 +17,14 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
         .then((res) => {
           setTodo(res.data.todo);
         })
-        .catch((err) => console.log(err.message));
+        .catch((error) => {
+          const err = error.response?.data;
+          if (!err) {
+            toast.error(error.response.statusText);
+          } else {
+            toast.error(err.message);
+          }
+        });
     }
   }, [todoId]);
 
@@ -37,7 +44,6 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setErrMsg("");
     setLoading(true);
     secureAxios({
       method: todoId ? "PUT" : "POST",
@@ -49,16 +55,15 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
         setTodoId("");
         setTodo({});
         setChanged((pre) => !pre);
+        toast.success(todoId ? "to do updated" : "new to do added");
         setShow(false);
       })
       .catch((error) => {
         const err = error.response?.data;
         if (!err) {
-          console.log("no server response");
-          setErrMsg("no server response");
+          toast.error(error.response.statusText);
         } else {
-          console.log(err);
-          setErrMsg(err.message);
+          toast.error(err.message);
         }
       })
       .finally(() => setLoading(false));
@@ -69,13 +74,6 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
       ref={todoRef}
       className="controldiv max-h-80 text-sm pb-5 border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-6  mt-16 "
     >
-      <p
-        className={`text-black mb-2 text-center  ${
-          errMsg ? "block" : "hidden"
-        }`}
-      >
-        {errMsg}
-      </p>
       {loading ? (
         <ServiceLoder text={`${todoId ? "updating" : "adding"} your todo`} />
       ) : (

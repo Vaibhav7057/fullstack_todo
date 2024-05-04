@@ -6,13 +6,13 @@ import { AiFillEye } from "react-icons/ai";
 import { AiFillEyeInvisible } from "react-icons/ai";
 import axios from "axios";
 import ServiceLoder from "../components/ServiceLoder";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [persist, setPersist] = useState(false);
   const [user, setUser] = useState({});
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [errMsg, setErrMsg] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,14 +37,15 @@ const Login = () => {
         dispatch(setAccessToken(accessToken));
         setUser({});
         setLoading(false);
+        toast.success("logged in successfully!");
         navigate(from, { replace: true });
       })
       .catch((error) => {
         const err = error.response?.data;
-        if (!error.response?.data) {
-          setErrMsg("No Server Response");
+        if (!err) {
+          toast.error(error.response.statusText);
         } else {
-          setErrMsg(err.message);
+          toast.error(err.message);
         }
       })
       .finally(() => setLoading(false));
@@ -62,18 +63,11 @@ const Login = () => {
     emailRef.current.focus();
   }, []);
 
-  useEffect(() => {
-    setErrMsg("");
-  }, [user]);
-
   return (
     <div className="flex justify-center items-center flex-col ">
       <h3 className="font-bold text-violet-300 text-2xl sm:text-[2.5vmax] my-7">
         Todo List App
       </h3>
-      <p className={`text-yellow-300   ${errMsg ? "block" : "hidden"}`}>
-        {errMsg}
-      </p>
       {loading ? (
         <ServiceLoder text="...logging you in, kindly hold for second" />
       ) : (

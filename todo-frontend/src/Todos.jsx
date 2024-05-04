@@ -12,6 +12,7 @@ import { setUserDetails } from "./reduxStore/Slices/userSlice";
 import SearchFunction from "./components/SearchFunction";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import ServiceLoder from "./components/ServiceLoder";
+import toast from "react-hot-toast";
 
 const Todos = () => {
   const { todos } = useSelector((state) => state.todo);
@@ -46,7 +47,14 @@ const Todos = () => {
         setPages(arrayOfPages);
         setIsLoading(false);
       })
-      .catch((err) => console.log(err))
+      .catch((error) => {
+        const err = error.response?.data;
+        if (!err) {
+          toast.error(error.response.statusText);
+        } else {
+          toast.error(err.message);
+        }
+      })
       .finally(() => setIsLoading(false));
   };
 
@@ -63,7 +71,14 @@ const Todos = () => {
         let arrayOfPages = new Array(totalPages).fill(1);
         setPages(arrayOfPages);
       })
-      .catch((err) => console.log(err));
+      .catch((error) => {
+        const err = error.response?.data;
+        if (!err) {
+          toast.error(error.response.statusText);
+        } else {
+          toast.error(err.message);
+        }
+      });
   };
 
   function expandtodo(event, todo) {
@@ -88,11 +103,12 @@ const Todos = () => {
           signal: controller.signal,
         });
         isMounted && dispatch(setUserDetails(res.data.user));
-      } catch (err) {
-        if (!err.response) {
-          console.log("no server response");
+      } catch (error) {
+        const err = error.response?.data;
+        if (!err) {
+          toast.error(error.response.statusText);
         } else {
-          console.log(err.response?.data);
+          toast.error(err.message);
         }
       }
     };
@@ -111,13 +127,15 @@ const Todos = () => {
       .delete(`/api/todos/deletetodo/${id}`)
       .then((res) => {
         setLoading(false);
+        toast.success("to do deleted successfully");
         setChanged((pre) => !pre);
       })
-      .catch((err) => {
-        if (!err.response) {
-          console.log("no server response");
+      .catch((error) => {
+        const err = error.response?.data;
+        if (!err) {
+          toast.error(error.response.statusText);
         } else {
-          console.log(err.response?.data);
+          toast.error(err.message);
         }
       })
       .finally(() => setLoading(false));
@@ -129,13 +147,15 @@ const Todos = () => {
       .put(`/api/todos/editstatus/${id}`, { completed })
       .then((res) => {
         setLoading(false);
+        toast.success("status edited successfully");
         setChanged((pre) => !pre);
       })
-      .catch((err) => {
-        if (!err.response) {
-          console.log("no server response");
+      .catch((error) => {
+        const err = error.response?.data;
+        if (!err) {
+          toast.error(error.response.statusText);
         } else {
-          console.log(err.response?.data);
+          toast.error(err.message);
         }
       })
       .finally(() => setLoading(false));

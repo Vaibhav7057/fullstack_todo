@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import ReactProfile, { ALL_FILTERS } from "react-profile";
 import "react-profile/themes/default.min.css";
 import ServiceLoder from "./ServiceLoder";
+import toast from "react-hot-toast";
 
 const Updatephoto = ({ setImg, public_id, operation }) => {
   const [profilephoto, setprofilephoto] = useState(null);
@@ -21,11 +22,12 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
     try {
       const res = await secureAxios.get("/api/user/me");
       dispatch(setUserDetails(res.data.user));
-    } catch (err) {
-      if (!err.response) {
-        console.log("no server response");
+    } catch (error) {
+      const err = error.response?.data;
+      if (!err) {
+        toast.error(error.response.statusText);
       } else {
-        console.log(err.response?.data);
+        toast.error(err.message);
       }
     }
   };
@@ -50,11 +52,16 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
         getuserdetails();
         inputFile.current.value = null;
         setLoading(false);
-        console.log(res.data);
+        toast.success("Profile photo changed successfully");
         setImg(false);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        const err = error.response?.data;
+        if (!err) {
+          toast.error(error.response.statusText);
+        } else {
+          toast.error(err.message);
+        }
         setImg(false);
       })
       .finally(() => setLoading(false));
@@ -71,13 +78,15 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
       .then((res) => {
         getuserdetails();
         setLoading(false);
+        toast.error("profile photo removed successfully");
         setImg(false);
       })
-      .catch((err) => {
-        if (!err.response?.data) {
-          console.log("no server response");
+      .catch((error) => {
+        const err = error.response?.data;
+        if (!err) {
+          toast.error(error.response.statusText);
         } else {
-          console.log(err.response.data);
+          toast.error(err.message);
         }
         setImg(false);
       })

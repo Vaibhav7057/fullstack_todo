@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { setUserDetails } from "../reduxStore/Slices/userSlice";
 import { useDispatch } from "react-redux";
 import ServiceLoder from "../components/ServiceLoder";
+import toast from "react-hot-toast";
 
 const DeleteAccount = () => {
   const navigate = useNavigate();
@@ -19,12 +20,19 @@ const DeleteAccount = () => {
     secureAxios
       .delete(`/api/user/deleteaccount/?public_id=${public_id}`)
       .then((res) => {
-        console.log(res.data);
         dispatch(setUserDetails(null));
         setLoading(false);
+        toast.success("your account deleted successfully");
         navigate("/register");
       })
-      .catch((err) => console.log(err.response))
+      .catch((error) => {
+        const err = error.response?.data;
+        if (!err) {
+          toast.error(error.response.statusText);
+        } else {
+          toast.error(err.message);
+        }
+      })
       .finally(() => setLoading(false));
   };
   return (

@@ -6,6 +6,7 @@ import { BsFillInfoCircleFill } from "react-icons/bs";
 import axios from "axios";
 import { useEffect } from "react";
 import ServiceLoder from "./ServiceLoder";
+import toast from "react-hot-toast";
 
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -15,7 +16,6 @@ const Forgotpass = () => {
   const [validEmail, setValidEmail] = useState(false);
   const [validPassword, setValidPassword] = useState(false);
   const [validMatch, setValidMatch] = useState(false);
-  const [errMsg, setErrMsg] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showConPass, setShowConPass] = useState(false);
@@ -30,11 +30,10 @@ const Forgotpass = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    setErrMsg("");
     if (!otpSent) {
       const v1 = EMAIL_REGEX.test(data?.email);
       if (!v1) {
-        setErrMsg("Invalid Entry");
+        toast.error("Invalid Entry");
         return;
       }
     }
@@ -42,7 +41,7 @@ const Forgotpass = () => {
       const v1 = PWD_REGEX.test(data?.newPassword);
       const v2 = data?.newPassword === data?.confirmPassword;
       if (!v1 || !v2) {
-        setErrMsg("Invalid Entry");
+        toast.error("Invalid Entry");
         return;
       }
     }
@@ -54,16 +53,21 @@ const Forgotpass = () => {
         setData({});
         setOtpSent(true);
         setLoading(false);
+        toast.success(
+          otpSent
+            ? "password changed successfully"
+            : "otp sent to your registered email id"
+        );
         if (otpSent) {
           navigate("/signin");
         }
       })
       .catch((error) => {
         const err = error.response.data;
-        if (!error.response.data) {
-          setErrMsg("server is not responding");
+        if (!err) {
+          toast.error(error.response.statusText);
         } else {
-          setErrMsg(err.message);
+          toast.error(err.message);
         }
       })
       .finally(() => setLoading(false));
@@ -78,18 +82,11 @@ const Forgotpass = () => {
     setValidEmail(EMAIL_REGEX.test(data?.email));
   }, [data?.email]);
 
-  useEffect(() => {
-    setErrMsg("");
-  }, [data]);
-
   return (
     <div className="flex justify-center items-center flex-col">
       <h3 className="font-bold text-violet-300 text-2xl sm:text-[2.5vmax] my-7">
         Todo List App
       </h3>
-      <p className={` text-yellow-300  ${errMsg ? "block" : "hidden"}`}>
-        {errMsg}
-      </p>
       {loading ? <ServiceLoder text="...processing your request" /> : ""}
       <section className=" min-w-[300px] border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-2 ">
         <h1 className="font-bold text-md text-indigo-950 my-4 ">
@@ -116,6 +113,7 @@ const Forgotpass = () => {
               placeholder={
                 otpSent ? "enter OTP sent to your Email" : "Enter your email"
               }
+              autoComplete="off"
               required
             />
             {!otpSent && (

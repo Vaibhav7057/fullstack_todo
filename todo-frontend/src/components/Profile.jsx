@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { userlogout } from "../reduxStore/Slices/userSlice";
 import PrivatePath from "../auth/PrivatePath";
+import toast from "react-hot-toast";
 
 const Profile = () => {
   const [showmenu, setShowmenu] = useState(false);
@@ -23,13 +24,15 @@ const Profile = () => {
       if (res.data?.success) {
         dispatch(userlogout());
         localStorage.setItem("persist", false);
+        toast.success("logged out successfully");
         navigate("/signin");
       }
-    } catch (err) {
-      if (!err.response) {
-        console.log("no server response");
+    } catch (error) {
+      const err = error.response?.data;
+      if (!err) {
+        toast.error(error.response.statusText);
       } else {
-        console.log(err.response?.data);
+        toast.error(err.message);
       }
     }
   }

@@ -7,12 +7,11 @@ import { BsFillInfoCircleFill } from "react-icons/bs";
 import { AiOutlineCheck } from "react-icons/ai";
 import { FaTimesCircle } from "react-icons/fa";
 import ServiceLoder from "../components/ServiceLoder";
-
+import toast from "react-hot-toast";
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 const Register = () => {
-  const [errMsg, setErrMsg] = useState("");
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
   const [validEmail, setValidEmail] = useState(false);
@@ -33,7 +32,7 @@ const Register = () => {
     const v1 = EMAIL_REGEX.test(user?.email);
     const v2 = PWD_REGEX.test(user?.password);
     if (!v1 || !v2) {
-      setErrMsg("Invalid Entry");
+      toast.error("Invalid Entry");
       return;
     }
     setLoading(true);
@@ -44,14 +43,15 @@ const Register = () => {
       .then((res) => {
         setUser({});
         setLoading(false);
+        toast.success("Congratulations, you registered successfully!");
         navigate("/signin");
       })
       .catch((error) => {
         const err = error.response.data;
-        if (!error.response.data) {
-          setErrMsg("No Server Response");
+        if (!err) {
+          toast.error(error.response.statusText);
         } else {
-          setErrMsg(err.message);
+          toast.error(err.message);
         }
         errRef.current.focus();
       })
@@ -61,10 +61,6 @@ const Register = () => {
   useEffect(() => {
     nameRef.current.focus();
   }, []);
-
-  useEffect(() => {
-    setErrMsg("");
-  }, [user]);
 
   useEffect(() => {
     setValidEmail(EMAIL_REGEX.test(user?.email));
@@ -79,9 +75,6 @@ const Register = () => {
       <h3 className="font-bold text-violet-300 text-2xl sm:text-[2.5vmax] my-7">
         Todo List App
       </h3>
-      <p className={` text-yellow-300  ${errMsg ? "block" : "hidden"}`}>
-        {errMsg}
-      </p>
       {loading ? (
         <ServiceLoder text="...creating your account please wait" />
       ) : (

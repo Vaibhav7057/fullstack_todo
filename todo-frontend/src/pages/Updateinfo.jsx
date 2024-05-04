@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setUserDetails } from "../reduxStore/Slices/userSlice";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import ServiceLoder from "../components/ServiceLoder";
-
+import toast from "react-hot-toast";
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 const Updateinfo = () => {
@@ -31,7 +31,7 @@ const Updateinfo = () => {
 
     const v1 = EMAIL_REGEX.test(user?.email);
     if (!v1) {
-      setErrMsg("Invalid Entry");
+      toast.error("Invalid Entry");
       return;
     }
     setLoading(true);
@@ -40,18 +40,18 @@ const Updateinfo = () => {
         headers: { "Content-Type": "application/json" },
       })
       .then((res) => {
-        console.log(res.data);
         setUser({});
         dispatch(setUserDetails(res.data.user));
         setLoading(false);
+        toast.success("your info updated successfully");
         navigate("/");
       })
       .catch((error) => {
-        const err = error.response.data;
-        if (!error.response.data) {
-          setErrMsg("server not responding");
+        const err = error.response?.data;
+        if (!err) {
+          toast.error(error.response.statusText);
         } else {
-          setErrMsg(err.message);
+          toast.error(err.message);
         }
       })
       .finally(() => setLoading(false));
@@ -61,18 +61,11 @@ const Updateinfo = () => {
     setValidEmail(EMAIL_REGEX.test(user?.email));
   }, [user?.email]);
 
-  useEffect(() => {
-    setErrMsg("");
-  }, [user]);
-
   return (
     <div className="flex justify-center items-center flex-col ">
       <h3 className="font-bold text-violet-300 text-2xl sm:text-[2.5vmax] my-7">
         Todo List App
       </h3>
-      <p className={` text-yellow-300  ${errMsg ? "block" : "hidden"}`}>
-        {errMsg}
-      </p>
       {loading ? <ServiceLoder text="...updating your info" /> : ""}
 
       <section className="controldiv text-md pb-5 border border-1 border-slate-800 bg-slate-100 rounded-md px-4 py-2">
