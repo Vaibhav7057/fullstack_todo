@@ -78,7 +78,7 @@ const Updatephoto = ({ setImg, public_id, operation }) => {
       .then((res) => {
         getuserdetails();
         setLoading(false);
-        toast.error("profile photo removed successfully");
+        toast.success("profile photo removed successfully");
         setImg(false);
       })
       .catch((error) => {
