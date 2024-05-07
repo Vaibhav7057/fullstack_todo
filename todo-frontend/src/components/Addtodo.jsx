@@ -60,7 +60,9 @@ const Addtodo = ({ setChanged, setShow, todoId, setTodoId }) => {
       })
       .catch((error) => {
         const err = error.response?.data;
-        if (!err) {
+        if (!error.response) {
+          toast.error("internal server error, sorry !");
+        } else if (!err) {
           toast.error(error.response.statusText);
         } else {
           toast.error(err.message);

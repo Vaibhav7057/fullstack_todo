@@ -47,8 +47,10 @@ const Register = () => {
         navigate("/signin");
       })
       .catch((error) => {
-        const err = error.response.data;
-        if (!err) {
+        const err = error.response?.data;
+        if (!error.response) {
+          toast.error("internal server error, sorry !");
+        } else if (!err) {
           toast.error(error.response.statusText);
         } else {
           toast.error(err.message);
